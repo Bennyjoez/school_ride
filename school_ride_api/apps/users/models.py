@@ -26,16 +26,16 @@ class User(AbstractUser):
         TEACHER = '4', 'Teacher'
         DRIVER = '5', 'Driver'
         GUARDIAN = '6', 'Guardian'
-        STUDENT = '7', 'Student'
     username = None 
     email = models.EmailField(unique=True, max_length=255)
-
     objects = UserManager()
-    
     name = models.CharField(max_length=100)
     phone_number = models.CharField(max_length=15)
     user_type = models.CharField(max_length=1, choices=UserType.choices)
     last_login = models.DateTimeField(blank=True, null=True)
+    bio = models.TextField(blank=True)
+    profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True)
+    school = models.ForeignKey('schools.School', null=True, blank=True, on_delete=models.SET_NULL, related_name='users')
 
     # Use email as the unique identifier for login
     USERNAME_FIELD = 'email' 
@@ -45,10 +45,3 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.name
-class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    bio = models.TextField(blank=True)
-    profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True)
-
-    def __str__(self):
-        return f"{self.user.name}'s Profile"

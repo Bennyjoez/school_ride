@@ -40,7 +40,7 @@ def vehicle_create(request):
             return JsonResponse({'error': 'Invalid status value'}, status=400)
         vehicle = Vehicle.objects.create(
             vehicle_type=data['vehicle_type'],
-            license_plate=data['license_plate'].upper(),
+            license_plate=data['license_plate'].upper().replace(' ', ''),
             capacity=data['capacity'],
             driver_id=data['driver_id'],
             status=data['status']
