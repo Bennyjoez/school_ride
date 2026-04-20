@@ -1,9 +1,10 @@
 from django.db import models
+from django.conf import settings
 import uuid
 
 class Student(models.Model):
     school = models.ForeignKey('schools.School', on_delete=models.CASCADE, related_name='students')
-    guardian = models.ForeignKey('users.User', on_delete=models.SET_NULL, null=True, blank=True, limit_choices_to={'user_type': '6'}, related_name='students')
+    guardian = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, limit_choices_to={'user_type': '6'}, related_name='students')
     full_name = models.CharField(max_length=150)
     grade = models.CharField(max_length=20)
     student_code = models.CharField(max_length=12, unique=True, editable=False)

@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 
 class Trip(models.Model):
@@ -10,7 +11,7 @@ class Trip(models.Model):
 
     route = models.ForeignKey('vehicles.Route', on_delete=models.CASCADE, related_name='trips')
     vehicle = models.ForeignKey('vehicles.Vehicle', on_delete=models.SET_NULL, null=True, related_name='trips')
-    driver = models.ForeignKey('users.User', on_delete=models.SET_NULL, null=True, limit_choices_to={'user_type': '5'}, related_name='trips')
+    driver = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, limit_choices_to={'user_type': '5'}, related_name='trips')
     trip_date = models.DateField()
     status = models.CharField(max_length=10, choices=Status.choices, default=Status.SCHEDULED)
     actual_start = models.DateTimeField(null=True, blank=True)
@@ -49,7 +50,7 @@ class CheckInEvent(models.Model):
     trip = models.ForeignKey(Trip, on_delete=models.CASCADE, related_name='checkin_events')
     student = models.ForeignKey('students.Student', on_delete=models.CASCADE, related_name='checkin_events')
     stop = models.ForeignKey('vehicles.Stop', on_delete=models.SET_NULL, null=True, related_name='checkin_events')
-    recorded_by = models.ForeignKey('users.User', on_delete=models.SET_NULL, null=True, related_name='recorded_checkins')
+    recorded_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name='recorded_checkins')
     event_type = models.CharField(max_length=6, choices=EventType.choices)
     occurred_at = models.DateTimeField(auto_now_add=True)
 
