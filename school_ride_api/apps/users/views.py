@@ -1,136 +1,170 @@
-from django.http import JsonResponse
-from django.forms.models import model_to_dict
-from psycopg2 import IntegrityError
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.views import csrf_exempt
+# apps/users/views.py
+from django.contrib.auth import get_user_model
+from rest_framework import status
+from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
+from rest_framework_simplejwt.tokens import RefreshToken
 
-from utils import validate_email, errorResponse, successResponse
-from .models import User
-from django.contrib.auth import login
-import json
-from rest_framework.decorators import api_view, permission_classes
+from apps.users.serializers import (
+    UserSerializer,
+    UserCreateSerializer,
+    ChangePasswordSerializer,
+)
+from apps.users.permissions import IsAdminOrDirector, IsSelfOrAdminOrDirector
 
-@csrf_exempt
-def login_user(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        try:
-            email = data['email']
-        except KeyError:
-            return errorResponse('Email is required', status=400)
+User = get_user_model()
+
+
+class AuthViewSet(ModelViewSet):
+    """
+    Handles JWT login and token refresh.
+    POST /auth/login/   — obtain access + refresh tokens
+    POST /auth/refresh/ — exchange refresh token for a new access token
+    """
+    permission_classes = [AllowAny]
+    http_method_names = ['post']
+
+    @action(detail=False, methods=['post'], url_path='login')
+    def login(self, request):
+        email = request.data.get('email', '').strip().lower()
+        password = request.data.get('password', '')
+
+        if not email or not password:
+            return Response(
+                {'detail': 'Email and password are required.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         try:
             user = User.objects.get(email=email)
-            if user:
-                login(request, user)
-                from rest_framework_simplejwt.tokens import RefreshToken
-                refresh = RefreshToken.for_user(user)
-                user.save()
-                resp = {
-                    'name': user.name,
-                    'email': user.email,
-                    'refresh': str(refresh),
-                    'access': str(refresh.access_token),
-                }
-                return successResponse('Login successful', resp)
-            else:
-                return errorResponse('Invalid credentials', status=400)
         except User.DoesNotExist:
-            return errorResponse('User not found', status=404)
-    return errorResponse('Invalid request method', status=400)
+            return Response(
+                {'detail': 'No account found with this email.'},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        if not user.check_password(password):
+            return Response(
+                {'detail': 'Incorrect password.'},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        if not user.is_active:
+            return Response(
+                {'detail': 'This account has been deactivated.'},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            'access': str(refresh.access_token),
+            'refresh': str(refresh),
+            'user': UserSerializer(user).data,
+        })
+
+    @action(detail=False, methods=['post'], url_path='refresh')
+    def refresh(self, request):
+        token = request.data.get('refresh')
+        if not token:
+            return Response(
+                {'detail': 'Refresh token is required.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        try:
+            refresh = RefreshToken(token)
+            return Response({'access': str(refresh.access_token)})
+        except Exception:
+            return Response(
+                {'detail': 'Invalid or expired refresh token.'},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
 
 
-# Create your views here.
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def user_list(request):
-    users = User.objects.all()
-    return successResponse('Users retrieved successfully', [model_to_dict(user) for user in users])
+class UserViewSet(ModelViewSet):
+    """
+    GET    /users/               — list all users in school
+    POST   /users/               — create a new user
+    GET    /users/{id}/          — retrieve a user
+    PATCH  /users/{id}/          — update a user
+    DELETE /users/{id}/          — deactivate a user (soft delete)
+    GET    /users/me/            — current user's profile
+    PATCH  /users/me/            — update current user's profile
+    POST   /users/me/change-password/ — change own password
+    GET    /users/drivers/       — list all drivers in the school
+    """
+    permission_classes = [IsAuthenticated]
+    http_method_names = ['get', 'post', 'patch', 'delete']
 
+    def get_queryset(self):
+        user = self.request.user
+        # Admins see all users; others see only their school's users
+        if user.user_type == '1':
+            return User.objects.all().order_by('name')
+        school = getattr(user, 'school', None)
+        if school is None:
+            return User.objects.none()
+        return User.objects.filter(school=school).order_by('name')
 
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-@csrf_exempt
-def user_create(request):
-    if request.method != 'POST':
-        return errorResponse('Method not allowed', status=405)
+    def get_serializer_class(self):
+        if self.action == 'create':
+            return UserCreateSerializer
+        return UserSerializer
 
-    try:
-        data = json.loads(request.body)
-    except json.JSONDecodeError:
-        return errorResponse('Invalid JSON', status=400)
+    def get_permissions(self):
+        if self.action == 'create':
+            return [IsAuthenticated(), IsAdminOrDirector()]
+        if self.action in ['update', 'partial_update', 'destroy']:
+            return [IsAuthenticated(), IsSelfOrAdminOrDirector()]
+        return [IsAuthenticated()]
 
-    # 1. Check for missing fields
-    required_fields = ['name', 'phone_number', 'email', 'user_type']
-    missing_fields = [field for field in required_fields if field not in data]
-    if missing_fields:
-        return errorResponse(f'Missing fields: {", ".join(missing_fields)}', status=400)
-
-    # 2. Basic Email Validation
-    email = data['email'].strip().lower()
-    if not validate_email(email):
-        return errorResponse('Invalid email format', status=400)
-
-    # 3. User Type Validation (matching your model choices)
-    valid_types = [choice[0] for choice in User.UserType.choices]
-    if data['user_type'] not in valid_types:
-        return errorResponse('Invalid user type', status=400)
-
-    # 4. Create User and handle IntegrityErrors (Unique email)
-    try:
-        # Use create_user instead of create to handle password hashing
-        user = User.objects.create_user(
-            email=email,
-            name=data['name'],
-            phone_number=data['phone_number'],
-            user_type=data['user_type'],
-            is_staff=data['user_type'] in ['1', '2', '3', '4', '5']
+    def destroy(self, request, *args, **kwargs):
+        """Soft delete — deactivate instead of removing from DB."""
+        user = self.get_object()
+        user.is_active = False
+        user.save(update_fields=['is_active'])
+        return Response(
+            {'detail': 'User deactivated successfully.'},
+            status=status.HTTP_200_OK,
         )
-        return JsonResponse({'message': 'User created', 'user': model_to_dict(user, exclude=['password'])}, status=201)
-    
-    except IntegrityError:
-        return errorResponse('A user with this email already exists', status=400)
-    except Exception as e:
-        print(f"Unexpected error: ", e)
-        return errorResponse('An unexpected error occurred. ' + str(e).split('\n')[1], status=500)
 
+    # ------------------------------------------------------------------
+    # /users/me/
+    # ------------------------------------------------------------------
+    @action(detail=False, methods=['get', 'patch'], url_path='me',
+            permission_classes=[IsAuthenticated])
+    def me(self, request):
+        if request.method == 'GET':
+            return Response(UserSerializer(request.user).data)
 
-def user_detail(request, pk):
-    try:
-        user = User.objects.get(pk=pk)
-        return JsonResponse({'user': model_to_dict(user)})
-    except User.DoesNotExist:
-        return errorResponse('User not found', status=404)
+        serializer = UserSerializer(
+            request.user, data=request.data, partial=True,
+            context={'request': request},
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
 
+    # ------------------------------------------------------------------
+    # /users/me/change-password/
+    # ------------------------------------------------------------------
+    @action(detail=False, methods=['post'], url_path='me/change-password',
+            permission_classes=[IsAuthenticated])
+    def change_password(self, request):
+        serializer = ChangePasswordSerializer(
+            data=request.data, context={'request': request}
+        )
+        serializer.is_valid(raise_exception=True)
+        request.user.set_password(serializer.validated_data['new_password'])
+        request.user.save(update_fields=['password'])
+        return Response({'detail': 'Password updated successfully.'})
 
-def user_update(request, pk):
-    try:
-        if not request.user.is_staff:
-            return errorResponse('Permission denied.', status=403)
-        user = User.objects.get(pk=pk)
-        if request.method == 'PUT':
-            data = json.loads(request.body)
-            user.name = data.get('name', user.name)
-            user.phone_number = data.get('phone_number', user.phone_number)
-            user.email = data.get('email', user.email)
-            user.password = data.get('password', user.password)
-            user.user_type = data.get('user_type', user.user_type)
-            user.save()
-            return JsonResponse({'user': model_to_dict(user)})
-        return errorResponse('Invalid request method', status=400)
-    except User.DoesNotExist:
-        return errorResponse('User not found', status=404)
-
-
-def user_delete(request, pk):
-    try:
-        if not request.user.is_staff:
-            return errorResponse('Permission denied', status=403)
-        user = User.objects.get(pk=pk)
-        if(request.user._user_type not in ['1', '2']):
-            return errorResponse('Permission denied.', status=403)
-        if request.method == 'DELETE':
-            user.delete()
-            return JsonResponse({'message': 'User deleted successfully'})
-        return errorResponse('Invalid request method', status=400)
-    except User.DoesNotExist:
-        return errorResponse('User not found', status=404)
+    # ------------------------------------------------------------------
+    # /users/drivers/
+    # ------------------------------------------------------------------
+    @action(detail=False, methods=['get'], url_path='drivers',
+            permission_classes=[IsAuthenticated])
+    def drivers(self, request):
+        qs = self.get_queryset().filter(user_type='5', is_active=True)
+        return Response(UserSerializer(qs, many=True).data)

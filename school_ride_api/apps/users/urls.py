@@ -1,11 +1,16 @@
-from django.urls import path
-from . import views
 
-urlpatterns = [
-    path('login/', views.login_user, name='login'),
-    path('list/', views.user_list, name='user-list'),
-    path('create/', views.user_create, name='user-create'),
-    path('<int:pk>/', views.user_detail, name='user-detail'),
-    path('<int:pk>/update/', views.user_update, name='user-update'),
-    path('<int:pk>/delete/', views.user_delete, name='user-delete'),
-]
+"""
+ API endpoints for user management:
+    POST /auth/login/   — obtain access + refresh tokens
+    POST /auth/refresh/ — exchange refresh token for a new access token
+
+
+    POST   /users/               — create a new user
+    GET    /users/{id}/          — retrieve a user
+    PATCH  /users/{id}/          — update a user
+    DELETE /users/{id}/          — deactivate a user (soft delete)
+    GET    /users/me/            — current user's profile
+    PATCH  /users/me/            — update current user's profile
+    POST   /users/me/change-password/ — change own password
+    GET    /users/drivers/       — list all drivers in the school
+"""
