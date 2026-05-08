@@ -1,4 +1,3 @@
-
 """
  API endpoints for user management:
     POST /auth/login/   — obtain access + refresh tokens
