@@ -22,7 +22,7 @@ class UserSerializer(serializers.ModelSerializer):
  
  
 class UserCreateSerializer(serializers.ModelSerializer):
-    """Used for POST /users/ — accepts a password and hashes it."""
+    """Used for POST /users/ - accepts a password and hashes it."""
     password = serializers.CharField(write_only=True, min_length=8)
  
     class Meta:

@@ -20,9 +20,11 @@ User = get_user_model()
 class AuthViewSet(ModelViewSet):
     """
     Handles JWT login and token refresh.
-    POST /auth/login/   — obtain access + refresh tokens
-    POST /auth/refresh/ — exchange refresh token for a new access token
+    POST /auth/login/   - obtain access + refresh tokens
+    POST /auth/refresh/ - exchange refresh token for a new access token
     """
+
+    authentication_classes = []
     permission_classes = [AllowAny]
     http_method_names = ['post']
 
@@ -84,15 +86,15 @@ class AuthViewSet(ModelViewSet):
 
 class UserViewSet(ModelViewSet):
     """
-    GET    /users/               — list all users in school
-    POST   /users/               — create a new user
-    GET    /users/{id}/          — retrieve a user
-    PATCH  /users/{id}/          — update a user
-    DELETE /users/{id}/          — deactivate a user (soft delete)
-    GET    /users/me/            — current user's profile
-    PATCH  /users/me/            — update current user's profile
-    POST   /users/me/change-password/ — change own password
-    GET    /users/drivers/       — list all drivers in the school
+    GET    /users/               - list all users in school
+    POST   /users/               - create a new user
+    GET    /users/{id}/          - retrieve a user
+    PATCH  /users/{id}/          - update a user
+    DELETE /users/{id}/          - deactivate a user (soft delete)
+    GET    /users/me/            - current user's profile
+    PATCH  /users/me/            - update current user's profile
+    POST   /users/me/change-password/ - change own password
+    GET    /users/drivers/       - list all drivers in the school
     """
     permission_classes = [IsAuthenticated]
     http_method_names = ['get', 'post', 'patch', 'delete']
@@ -120,7 +122,7 @@ class UserViewSet(ModelViewSet):
         return [IsAuthenticated()]
 
     def destroy(self, request, *args, **kwargs):
-        """Soft delete — deactivate instead of removing from DB."""
+        """Soft delete - deactivate instead of removing from DB."""
         user = self.get_object()
         user.is_active = False
         user.save(update_fields=['is_active'])

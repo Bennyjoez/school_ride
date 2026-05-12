@@ -88,7 +88,7 @@ def _broadcast_eta(trip_id: int, eta_map: dict):
             }
         )
     except Exception:
-        logger.warning('Could not broadcast ETA for trip %s — Channels unavailable', trip_id)
+        logger.warning('Could not broadcast ETA for trip %s - Channels unavailable', trip_id)
 
 
 # =============================================================================
@@ -210,7 +210,7 @@ def notify_checkin_event(self, trip_id: int, checkin_event_id: int):
 
 
 # =============================================================================
-# Delivery dispatcher — routes to push / SMS / email
+# Delivery dispatcher - routes to push / SMS / email
 # =============================================================================
 
 def _dispatch_notification(*, recipient, trip, student, event_type, message):

@@ -61,7 +61,7 @@ class TripTrackingConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_discard(self.group_name, self.channel_name)
 
     # ------------------------------------------------------------------
-    # Messages received from clients (currently read-only feed — clients
+    # Messages received from clients (currently read-only feed - clients
     # don't send anything, but we handle gracefully if they do)
     # ------------------------------------------------------------------
     async def receive(self, text_data=None, bytes_data=None):
@@ -142,5 +142,5 @@ class TripTrackingConsumer(AsyncWebsocketConsumer):
                 route_assignments__is_active=True,
             ).exists()
 
-        # Director / Manager / Teacher / Driver — school match is enough
+        # Director / Manager / Teacher / Driver - school match is enough
         return True

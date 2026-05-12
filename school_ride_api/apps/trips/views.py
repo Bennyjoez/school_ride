@@ -18,15 +18,15 @@ from apps.users.permissions import IsAdminOrDirectorOrManager, IsDriverOfTrip
 
 class TripViewSet(SchoolScopedMixin, ModelViewSet):
     """
-    GET    /trips/               — list trips in school
-    POST   /trips/               — schedule a new trip
-    GET    /trips/{id}/          — retrieve a trip
-    PATCH  /trips/{id}/          — update a trip
-    POST   /trips/{id}/start/    — driver starts the trip
-    POST   /trips/{id}/end/      — driver ends the trip
-    POST   /trips/{id}/checkin/  — record a student board/alight event
-    POST   /trips/{id}/ping/     — driver posts a GPS location
-    GET    /trips/{id}/pings/    — full GPS ping history for a trip
+    GET    /trips/               - list trips in school
+    POST   /trips/               - schedule a new trip
+    GET    /trips/{id}/          - retrieve a trip
+    PATCH  /trips/{id}/          - update a trip
+    POST   /trips/{id}/start/    - driver starts the trip
+    POST   /trips/{id}/end/      - driver ends the trip
+    POST   /trips/{id}/checkin/  - record a student board/alight event
+    POST   /trips/{id}/ping/     - driver posts a GPS location
+    GET    /trips/{id}/pings/    - full GPS ping history for a trip
     """
     queryset = Trip.objects.select_related(
         'route__school', 'vehicle', 'driver'
@@ -57,7 +57,7 @@ class TripViewSet(SchoolScopedMixin, ModelViewSet):
         return qs.filter(route__school=school)
 
     def perform_create(self, serializer):
-        """Trips don't have a direct school FK — school is on route."""
+        """Trips don't have a direct school FK - school is on route."""
         serializer.save()
 
     def get_permissions(self):
@@ -163,7 +163,7 @@ class TripViewSet(SchoolScopedMixin, ModelViewSet):
                 }
             )
         except Exception:
-            pass  # Channels not configured — degrade gracefully
+            pass  # Channels not configured - degrade gracefully
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 

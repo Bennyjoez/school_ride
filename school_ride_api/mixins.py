@@ -24,7 +24,7 @@ class SchoolScopedMixin:
             return qs
         school = getattr(self.request.user, 'school', None)
         if school is None:
-            # User has no school assigned — return nothing rather than leak data
+            # User has no school assigned - return nothing rather than leak data
             return qs.none()
         return qs.filter(school=school)
 

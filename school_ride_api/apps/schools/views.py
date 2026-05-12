@@ -9,11 +9,11 @@ from apps.users.permissions import IsAdmin
 
 class SchoolViewSet(ModelViewSet):
     """
-    GET    /schools/        — list schools (Admin: all; others: own school)
-    POST   /schools/        — create a school (Admin only)
-    GET    /schools/{id}/   — retrieve a school
-    PATCH  /schools/{id}/   — update a school (Admin only)
-    DELETE /schools/{id}/   — deactivate a school (Admin only)
+    GET    /schools/        - list schools (Admin: all; others: own school)
+    POST   /schools/        - create a school (Admin only)
+    GET    /schools/{id}/   - retrieve a school
+    PATCH  /schools/{id}/   - update a school (Admin only)
+    DELETE /schools/{id}/   - deactivate a school (Admin only)
     """
     queryset = School.objects.order_by('name')
     serializer_class = SchoolSerializer
@@ -35,7 +35,7 @@ class SchoolViewSet(ModelViewSet):
         return [IsAuthenticated()]
 
     def destroy(self, request, *args, **kwargs):
-        """Soft delete — deactivate instead of removing from DB."""
+        """Soft delete - deactivate instead of removing from DB."""
         from rest_framework.response import Response
         from rest_framework import status
         school = self.get_object()

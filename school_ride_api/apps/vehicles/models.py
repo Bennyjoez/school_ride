@@ -22,7 +22,7 @@ class Vehicle(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.get_vehicle_type_display()} — {self.license_plate}"
+        return f"{self.get_vehicle_type_display()} - {self.license_plate}"
 
 
 class Route(models.Model):
@@ -56,4 +56,4 @@ class Stop(models.Model):
         ordering = ['sequence']
 
     def __str__(self):
-        return f"{self.route.name} — Stop {self.sequence}: {self.name}"
+        return f"{self.route.name} - Stop {self.sequence}: {self.name}"

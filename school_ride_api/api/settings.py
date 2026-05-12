@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Security
 # =============================================================================
 
-# Raises an error immediately on startup if missing — intentional
+# Raises an error immediately on startup if missing - intentional
 # Generate one with:
 # python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'
 SECRET_KEY = config('SECRET_KEY')
@@ -82,7 +82,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'api.urls'
 
-# ASGI replaces WSGI as the entry point — required for Django Channels (WebSockets)
+# ASGI replaces WSGI as the entry point - required for Django Channels (WebSockets)
 ASGI_APPLICATION = 'config.asgi.application'
 
 WSGI_APPLICATION = 'api.wsgi.application'
@@ -174,7 +174,7 @@ SPECTACULAR_SETTINGS = {
 
 
 # =============================================================================
-# Redis — shared by Channels and Celery
+# Redis - shared by Channels and Celery
 # =============================================================================
 
 REDIS_URL = config('REDIS_URL', default='redis://localhost:6379/0')

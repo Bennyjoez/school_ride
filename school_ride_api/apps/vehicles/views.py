@@ -18,13 +18,13 @@ from apps.users.permissions import IsAdminOrDirectorOrManager
 
 class VehicleViewSet(SchoolScopedMixin, ModelViewSet):
     """
-    GET    /vehicles/                  — list vehicles in school
-    POST   /vehicles/                  — create a vehicle
-    GET    /vehicles/{id}/             — retrieve a vehicle
-    PATCH  /vehicles/{id}/             — update a vehicle
-    DELETE /vehicles/{id}/             — delete a vehicle
-    GET    /vehicles/available/        — vehicles with status=available
-    PATCH  /vehicles/{id}/assign-driver/ — assign a driver to a vehicle
+    GET    /vehicles/                  - list vehicles in school
+    POST   /vehicles/                  - create a vehicle
+    GET    /vehicles/{id}/             - retrieve a vehicle
+    PATCH  /vehicles/{id}/             - update a vehicle
+    DELETE /vehicles/{id}/             - delete a vehicle
+    GET    /vehicles/available/        - vehicles with status=available
+    PATCH  /vehicles/{id}/assign-driver/ - assign a driver to a vehicle
     """
     queryset = Vehicle.objects.select_related('driver', 'school').order_by('-created_at')
     serializer_class = VehicleSerializer
@@ -67,16 +67,16 @@ class VehicleViewSet(SchoolScopedMixin, ModelViewSet):
 
 class RouteViewSet(SchoolScopedMixin, ModelViewSet):
     """
-    GET    /routes/                    — list routes in school
-    POST   /routes/                    — create a route
-    GET    /routes/{id}/               — retrieve a route (with stops)
-    PATCH  /routes/{id}/               — update a route
-    DELETE /routes/{id}/               — delete a route
-    GET    /routes/{id}/stops/         — list stops for a route
-    POST   /routes/{id}/stops/         — add a stop to a route
-    GET    /routes/{id}/stops/{stop_id}/ — retrieve a stop
-    PATCH  /routes/{id}/stops/{stop_id}/ — update a stop
-    DELETE /routes/{id}/stops/{stop_id}/ — delete a stop
+    GET    /routes/                    - list routes in school
+    POST   /routes/                    - create a route
+    GET    /routes/{id}/               - retrieve a route (with stops)
+    PATCH  /routes/{id}/               - update a route
+    DELETE /routes/{id}/               - delete a route
+    GET    /routes/{id}/stops/         - list stops for a route
+    POST   /routes/{id}/stops/         - add a stop to a route
+    GET    /routes/{id}/stops/{stop_id}/ - retrieve a stop
+    PATCH  /routes/{id}/stops/{stop_id}/ - update a stop
+    DELETE /routes/{id}/stops/{stop_id}/ - delete a stop
     """
     queryset = Route.objects.select_related(
         'school', 'vehicle', 'driver'
@@ -106,7 +106,7 @@ class RouteViewSet(SchoolScopedMixin, ModelViewSet):
             qs = route.stops.all()
             return Response(StopSerializer(qs, many=True).data)
 
-        # POST — add a stop
+        # POST - add a stop
         serializer = StopSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save(route=route)

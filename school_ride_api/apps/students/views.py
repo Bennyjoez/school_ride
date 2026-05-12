@@ -13,17 +13,17 @@ from apps.users.permissions import IsAdminOrDirectorOrManager
 
 class StudentViewSet(SchoolScopedMixin, ModelViewSet):
     """
-    GET    /students/                          — list students in school
-    POST   /students/                          — create a student
-    GET    /students/{id}/                     — retrieve a student
-    PATCH  /students/{id}/                     — update a student
-    DELETE /students/{id}/                     — deactivate a student
-    POST   /students/{id}/generate-code/       — regenerate QR/PIN code
-    GET    /students/{id}/routes/              — list route assignments
-    POST   /students/{id}/routes/              — assign a route
-    GET    /students/{id}/routes/{assignment_id}/ — retrieve assignment
-    PATCH  /students/{id}/routes/{assignment_id}/ — update assignment
-    DELETE /students/{id}/routes/{assignment_id}/ — remove assignment
+    GET    /students/                          - list students in school
+    POST   /students/                          - create a student
+    GET    /students/{id}/                     - retrieve a student
+    PATCH  /students/{id}/                     - update a student
+    DELETE /students/{id}/                     - deactivate a student
+    POST   /students/{id}/generate-code/       - regenerate QR/PIN code
+    GET    /students/{id}/routes/              - list route assignments
+    POST   /students/{id}/routes/              - assign a route
+    GET    /students/{id}/routes/{assignment_id}/ - retrieve assignment
+    PATCH  /students/{id}/routes/{assignment_id}/ - update assignment
+    DELETE /students/{id}/routes/{assignment_id}/ - remove assignment
     """
     queryset = Student.objects.select_related(
         'school', 'guardian'
@@ -40,7 +40,7 @@ class StudentViewSet(SchoolScopedMixin, ModelViewSet):
         return [IsAuthenticated()]
 
     def destroy(self, request, *args, **kwargs):
-        """Soft delete — deactivate instead of removing from DB."""
+        """Soft delete - deactivate instead of removing from DB."""
         student = self.get_object()
         student.is_active = False
         student.save(update_fields=['is_active'])
@@ -75,7 +75,7 @@ class StudentViewSet(SchoolScopedMixin, ModelViewSet):
             qs = student.route_assignments.select_related('route', 'stop')
             return Response(StudentRouteSerializer(qs, many=True).data)
 
-        # POST — assign a route
+        # POST - assign a route
         serializer = StudentRouteSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save(student=student)

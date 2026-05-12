@@ -24,7 +24,7 @@ class Trip(models.Model):
         ]
 
     def __str__(self):
-        return f"{self.route.name} — {self.trip_date}"
+        return f"{self.route.name} - {self.trip_date}"
 
 
 class GPSPing(models.Model):
@@ -55,4 +55,4 @@ class CheckInEvent(models.Model):
     occurred_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.student} {self.event_type} at {self.stop} — {self.occurred_at:%H:%M}"
+        return f"{self.student} {self.event_type} at {self.stop} - {self.occurred_at:%H:%M}"
