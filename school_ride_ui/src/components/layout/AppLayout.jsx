@@ -1,6 +1,7 @@
 // src/components/layout/AppLayout.jsx
 import { Outlet } from 'react-router-dom'
 import { Sidebar } from './Sidebar'
+import ErrorBoundary from './ErrorBoundary'
 
 export function AppLayout() {
   return (
@@ -8,7 +9,9 @@ export function AppLayout() {
       <Sidebar />
       <main className="flex-1 overflow-y-auto">
         <div className="max-w-6xl mx-auto px-6 py-8">
-          <Outlet />
+          <ErrorBoundary>
+             <Outlet />
+          </ErrorBoundary>
         </div>
       </main>
     </div>
