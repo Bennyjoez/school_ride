@@ -20,7 +20,7 @@ import {
   EmptyState,
   TripStatusBadge,
 } from "./components";
-import { ROLELABELS } from "../../hooks/constants";
+import { ROLE_LABELS } from "../../hooks/constants";
 
 export default function DashboardPage() {
   const user = useSelector(selectCurrentUser);
@@ -45,7 +45,7 @@ function Greeting({ user }) {
   return (
     <div className="mb-8">
       <p className="text-xs font-medium text-primary-600 uppercase tracking-widest mb-1">
-        {ROLELABELS[user?.user_type]}
+        {ROLE_LABELS[user?.user_type]}
       </p>
       <h1 className="text-2xl font-bold text-gray-900">
         {greeting}, {user?.name?.split(" ")[0]}
