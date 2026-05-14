@@ -1,4 +1,6 @@
 # apps/users/views.py
+import email
+
 from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.decorators import action
@@ -40,7 +42,7 @@ class AuthViewSet(ModelViewSet):
             )
 
         try:
-            user = User.objects.get(email=email)
+            user = User.objects.get(email__iexact=email)
         except User.DoesNotExist:
             return Response(
                 {'detail': 'No account found with this email.'},
