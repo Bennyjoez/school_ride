@@ -65,3 +65,20 @@ export const DIRECTION_LABEL = {
   PM: "Afternoon",
   BOTH: "Both",
 };
+
+export const TIMEZONES = [
+  "Africa/Nairobi",
+  "Africa/Lagos",
+  "Africa/Johannesburg",
+  "Africa/Cairo",
+  "Africa/Accra",
+  "Europe/London",
+  "Europe/Paris",
+  "America/New_York",
+  "America/Chicago",
+  "America/Los_Angeles",
+  "Asia/Dubai",
+  "Asia/Kolkata",
+  "Asia/Singapore",
+  "Australia/Sydney",
+];
