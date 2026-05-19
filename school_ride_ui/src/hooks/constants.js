@@ -94,3 +94,9 @@ export const VEHICLE_STATUS_OPTIONS = [
   { value: "in_service", label: "In Service" },
   { value: "maintenance", label: "Maintenance" },
 ];
+
+export const DIRECTION_OPTIONS = [
+  { value: 'AM',   label: 'Morning (AM)'   },
+  { value: 'PM',   label: 'Afternoon (PM)' },
+  { value: 'BOTH', label: 'Both'           },
+]

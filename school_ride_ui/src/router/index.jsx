@@ -9,7 +9,7 @@ import DashboardPage from "../pages/dashboard/DashboardPage";
 import UsersPage from "../pages/users/UsersPage";
 import SchoolsPage from "../pages/schools/SchoolsPage";
 import VehiclesPage from "../pages/vehicles/VehiclesPage";
-import RoutesPage from "../pages/vehicles/RoutesPage";
+import RoutesPage from "../pages/routes/RoutesPage";
 import StudentsPage from "../pages/students/StudentsPage";
 import TripsPage from "../pages/trips/TripsPage";
 import TripDetailPage from "../pages/trips/TripDetailPage";
