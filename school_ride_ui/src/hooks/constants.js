@@ -82,3 +82,15 @@ export const TIMEZONES = [
   "Asia/Singapore",
   "Australia/Sydney",
 ];
+
+export const VEHICLE_TYPE_OPTIONS = [
+  { value: "1", label: "Bus" },
+  { value: "2", label: "Van" },
+  { value: "3", label: "Car" },
+];
+
+export const VEHICLE_STATUS_OPTIONS = [
+  { value: "available", label: "Available" },
+  { value: "in_service", label: "In Service" },
+  { value: "maintenance", label: "Maintenance" },
+];
