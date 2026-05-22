@@ -30,14 +30,6 @@ import { DIRECTION_LABEL, DIRECTION_OPTIONS } from "../../hooks/constants";
 import { format } from "date-fns";
 import { RouteFormModal, RoutesTable } from "./Components";
 
-// Constants
-
-const DIRECTION_BADGE = {
-  AM: "blue",
-  PM: "amber",
-  BOTH: "purple",
-};
-
 // Main page
 
 export default function RoutesPage() {

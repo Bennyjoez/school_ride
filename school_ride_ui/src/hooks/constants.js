@@ -100,3 +100,9 @@ export const DIRECTION_OPTIONS = [
   { value: 'PM',   label: 'Afternoon (PM)' },
   { value: 'BOTH', label: 'Both'           },
 ]
+
+export const DIRECTION_BADGE = {
+  AM: "blue",
+  PM: "amber",
+  BOTH: "purple",
+};

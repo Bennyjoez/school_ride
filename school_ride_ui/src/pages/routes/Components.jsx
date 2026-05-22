@@ -1,6 +1,7 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
+import { useSelector } from 'react-redux'
 import {
   getRoutes,
   createRoute,
@@ -11,6 +12,7 @@ import {
   updateStop,
   deleteStop,
   getVehicles,
+  getSchools,
 } from "../../api/endpoints/resources";
 import { getDrivers } from "../../api/endpoints/users";
 import {
@@ -25,11 +27,14 @@ import {
   Spinner,
 } from "../../components/ui";
 import { RoleGuard } from "../../components/layout/ProtectedRoute";
-import { DIRECTION_LABEL, DIRECTION_OPTIONS } from "../../hooks/constants";
+import { DIRECTION_BADGE, DIRECTION_LABEL, DIRECTION_OPTIONS } from "../../hooks/constants";
 import { format } from "date-fns";
+import { selectIsAdmin, selectCurrentUser } from "../../store/authSlice";
 
 // Route form modal
 export function RouteFormModal({ open, onClose, route }) {
+  const user = useSelector(selectCurrentUser);
+  const isAdmin = useSelector(selectIsAdmin);
   const isEdit = Boolean(route);
   const queryClient = useQueryClient();
   const [apiError, setApiError] = useState(null);
@@ -40,6 +45,12 @@ export function RouteFormModal({ open, onClose, route }) {
     reset,
     formState: { errors, isSubmitting },
   } = useForm();
+
+  const { data: schools } = useQuery({
+    queryKey: ["schools"],
+    queryFn: () => getSchools().then((r) => r.data),
+    enabled: open,
+  });
 
   const { data: vehicles } = useQuery({
     queryKey: ["vehicles"],
@@ -53,7 +64,7 @@ export function RouteFormModal({ open, onClose, route }) {
     enabled: open,
   });
 
-  useState(() => {
+  useEffect(() => {
     if (open) {
       setApiError(null);
       reset(
@@ -64,6 +75,7 @@ export function RouteFormModal({ open, onClose, route }) {
               scheduled_start: route.scheduled_start ?? "",
               vehicle: route.vehicle ?? "",
               driver: route.driver ?? "",
+              school: route.school ?? "",
             }
           : {
               direction: "AM",
@@ -129,6 +141,19 @@ export function RouteFormModal({ open, onClose, route }) {
           />
         </div>
 
+        {isAdmin && (
+          <Select
+            label="Assign School"
+            error={errors.school?.message}
+            {...register('school', { required: 'School is required' })}
+          >
+            <option value="">Select a school</option>
+            {schools?.map(s => (
+              <option key={s.id} value={s.id}>{s.name}</option>
+            ))}
+          </Select>
+        )}
+
         <Select label="Assign vehicle (optional)" {...register("vehicle")}>
           <option value="">No vehicle assigned</option>
           {vehicles?.map((v) => (
@@ -178,7 +203,7 @@ export function StopFormModal({ open, onClose, routeId, stop }) {
     formState: { errors, isSubmitting },
   } = useForm();
 
-  useState(() => {
+  useEffect(() => {
     if (open) {
       setApiError(null);
       reset(

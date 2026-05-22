@@ -16,20 +16,26 @@ class StopSerializer(serializers.ModelSerializer):
  
 class RouteSerializer(serializers.ModelSerializer):
     stops = StopSerializer(many=True, read_only=True)
-    vehicle_license = serializers.CharField(source='vehicle.license_plate', read_only=True)
-    driver_name = serializers.CharField(source='driver.name', read_only=True)
+    
+    vehicle_license = serializers.CharField(source='vehicle.license_plate', read_only=True, default=None)
+    driver_name = serializers.CharField(source='driver.name', read_only=True, default=None)
+    school_name   = serializers.CharField(source='school.name', read_only=True, default=None)
  
     class Meta:
         model = Route
         fields = [
             'id', 'name', 'direction', 'scheduled_start', 'is_active',
-            'vehicle', 'vehicle_license', 'driver', 'driver_name',
+            'school', 'school_name',
+            'vehicle', 'vehicle_license', 
+            'driver', 'driver_name',
             'stops', 'created_at',
         ]
-        read_only_fields = ['id', 'created_at', 'vehicle_license', 'driver_name', 'stops']
+        # Removed explicitly declared read-only fields from here
+        read_only_fields = ['id', 'created_at'] 
         extra_kwargs = {
-            'vehicle': {'required': False},
-            'driver': {'required': False},
+            'vehicle': {'required': False, 'allow_null': True},
+            'driver': {'required': False, 'allow_null': True},
+            'school':  {'required': False},
         }
  
  

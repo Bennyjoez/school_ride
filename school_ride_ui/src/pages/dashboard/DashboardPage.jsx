@@ -21,6 +21,7 @@ import {
   TripStatusBadge,
 } from "./components";
 import { ROLE_LABELS } from "../../hooks/constants";
+import { FleetMap } from "./Fleetmap";
 
 export default function DashboardPage() {
   const user = useSelector(selectCurrentUser);
@@ -116,6 +117,9 @@ function AdminDashboard({ user }) {
           icon={<GlobeIcon />}
         />
       </div>
+
+      <FleetMap height="380px"  />
+
 
       {activeTrips.length > 0 && (
         <div className="mb-6 p-4 rounded-2xl bg-green-50 border border-green-200 flex items-center gap-3">
