@@ -24,3 +24,18 @@ logs
 *.sw?
 .env
 env
+
+# Python bytecode and cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Django specific local files
+db.sqlite3
+.env
+local_settings.py
+media/

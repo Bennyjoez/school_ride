@@ -52,8 +52,8 @@ class VehicleSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['id', 'created_at', 'updated_at', 'driver_name', 'school_name']
         extra_kwargs = {
-            'school': {'read_only': True},  # injected by SchoolScopedMixin
-            'driver': {'required': False},
+            'school': {'required': False},  # injected by SchoolScopedMixin
+            'driver': {'required': False, 'allow_null': True},
         }
  
     def validate_license_plate(self, value):

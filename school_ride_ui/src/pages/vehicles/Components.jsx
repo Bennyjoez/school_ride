@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import {
   createVehicle,
   updateVehicle,
   assignDriver,
+  getSchools,
 } from "../../api/endpoints/resources";
 import { getDrivers } from "../../api/endpoints/users";
 import {
@@ -25,11 +26,14 @@ import {
   VEHICLE_TYPE_OPTIONS,
 } from "../../hooks/constants";
 import { format } from "date-fns";
+import { useSelector } from "react-redux";
+import { selectIsAdmin } from "../../store/authSlice";
 
 
 // Vehicle form modal 
 
 export function VehicleFormModal({ open, onClose, vehicle }) {
+  const isAdmin = useSelector(selectIsAdmin);
   const isEdit = Boolean(vehicle);
   const queryClient = useQueryClient();
   const [apiError, setApiError] = useState(null);
@@ -41,7 +45,7 @@ export function VehicleFormModal({ open, onClose, vehicle }) {
     formState: { errors, isSubmitting },
   } = useForm();
 
-  useState(() => {
+  useEffect(() => {
     if (open) {
       setApiError(null);
       reset(
@@ -51,11 +55,18 @@ export function VehicleFormModal({ open, onClose, vehicle }) {
               license_plate: vehicle.license_plate,
               capacity: vehicle.capacity,
               status: vehicle.status,
+              school: vehicle.school,
             }
           : { vehicle_type: "1", status: "available" },
       );
     }
   }, [open, vehicle]);
+
+  const { data: schools } = useQuery({
+    queryKey: ["schools"],
+    queryFn: () => getSchools().then((r) => r.data),
+    enabled: open,
+  });
 
   const mutation = useMutation({
     mutationFn: (data) =>
@@ -124,6 +135,18 @@ export function VehicleFormModal({ open, onClose, vehicle }) {
               <option key={o.value} value={o.value}>
                 {o.label}
               </option>
+            ))}
+          </Select>
+        )}
+        {isAdmin && (
+          <Select
+            label="Assign School"
+            error={errors.school?.message}
+            {...register('school', { required: 'School is required' })}
+          >
+            <option value="">Select a school</option>
+            {schools?.map(s => (
+              <option key={s.id} value={s.id}>{s.name}</option>
             ))}
           </Select>
         )}
