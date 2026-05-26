@@ -49,7 +49,7 @@ export function RouteFormModal({ open, onClose, route }) {
   const { data: schools } = useQuery({
     queryKey: ["schools"],
     queryFn: () => getSchools().then((r) => r.data),
-    enabled: open,
+    enabled: open && isAdmin, // only admins pick a school
   });
 
   const { data: vehicles } = useQuery({

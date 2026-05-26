@@ -6,7 +6,7 @@ import { selectCurrentUser } from "../../store/authSlice";
 import { getUsers, deactivateUser } from "../../api/endpoints/users";
 import { PageHeader, Button, ConfirmModal } from "../../components/ui";
 import { RoleGuard } from "../../components/layout/ProtectedRoute";
-import { UsersTable } from "./components";
+import { UsersTable } from "./Components";
 import { UserFormModal } from "./UserFormModal";
 
 const ROLE_FILTER_OPTIONS = [

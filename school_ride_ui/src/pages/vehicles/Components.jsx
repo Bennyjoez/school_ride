@@ -65,7 +65,7 @@ export function VehicleFormModal({ open, onClose, vehicle }) {
   const { data: schools } = useQuery({
     queryKey: ["schools"],
     queryFn: () => getSchools().then((r) => r.data),
-    enabled: open,
+    enabled: open && isAdmin, // only admins pick a school
   });
 
   const mutation = useMutation({

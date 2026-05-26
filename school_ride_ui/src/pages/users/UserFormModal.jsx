@@ -5,7 +5,7 @@ import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { createUser, updateUser } from "../../api/endpoints/users";
 import { getSchools } from "../../api/endpoints/resources";
 import { useSelector } from "react-redux";
-import { selectCurrentUser } from "../../store/authSlice";
+import { selectCurrentUser, selectIsAdmin } from "../../store/authSlice";
 import {
   Modal,
   Button,
@@ -19,7 +19,7 @@ import { ADMIN_USER_TYPES, USER_TYPES } from "../../hooks/constants";
 export function UserFormModal({ open, onClose, user }) {
   const isEdit = Boolean(user);
   const currentUser = useSelector(selectCurrentUser);
-  const isAdmin = currentUser?.user_type === "1";
+  const isAdmin = useSelector(selectIsAdmin);
   const queryClient = useQueryClient();
   const [apiError, setApiError] = useState(null);
 
@@ -47,6 +47,7 @@ export function UserFormModal({ open, onClose, user }) {
               email: user.email,
               phone_number: user.phone_number,
               user_type: user.user_type,
+              school: user.school ?? "",
               bio: user.bio ?? "",
             }
           : {},
