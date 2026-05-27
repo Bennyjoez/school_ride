@@ -48,6 +48,16 @@ api.interceptors.response.use(
         window.location.href = '/login'
         return Promise.reject(error)
       }
+    } else {
+      // show the toast
+      let newError = {message: error?.response?.data?.detail || error.message || 'An unknown error occurred'}
+      const res = error?.response?.data
+      if(Object.keys(res || {}).length > 0) {
+        Object.keys(res || {}).forEach(key => {
+          newError.message = newError.message + (newError.message ? ' ' : '') + (Array.isArray(res[key]) ? `${key}: ${res[key].join(' ')}` : `${key}: ${res[key]}`)
+        })
+      }
+      return Promise.reject(newError)
     }
 
     return Promise.reject(error)
