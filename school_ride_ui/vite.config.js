@@ -13,4 +13,9 @@ export default defineConfig({
       },
     },
   },
+  resolve: {
+    alias: {
+      'redux-persist/lib/storage': 'redux-persist/lib/storage/index.js',
+    },
+  },
 })

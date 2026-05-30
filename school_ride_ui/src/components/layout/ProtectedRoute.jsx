@@ -1,20 +1,20 @@
 // src/components/layout/ProtectedRoute.jsx
-import { useSelector } from 'react-redux'
-import { Navigate, useLocation } from 'react-router-dom'
-import { selectCurrentUser } from '../../store/authSlice'
+import { useSelector } from "react-redux";
+import { Navigate, useLocation } from "react-router-dom";
+import { selectCurrentUser } from "../../store/authSlice";
 
 /**
  * Redirects to /login if the user is not authenticated.
  */
 export function ProtectedRoute({ children }) {
-  const user     = useSelector(selectCurrentUser)
-  const location = useLocation()
+  const user = useSelector(selectCurrentUser);
+  const location = useLocation();
 
   if (!user) {
-    return <Navigate to="/login" state={{ from: location }} replace />
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  return children
+  return children;
 }
 
 /**
@@ -27,8 +27,8 @@ export function ProtectedRoute({ children }) {
  *   </RoleGuard>
  */
 export function RoleGuard({ allowedRoles, children, fallback = null }) {
-  const user = useSelector(selectCurrentUser)
-  if (!user) return fallback
-  if (!allowedRoles.includes(user.user_type)) return fallback
-  return children
+  const user = useSelector(selectCurrentUser);
+  if (!user) return fallback;
+  if (!allowedRoles.includes(user.user_type)) return fallback;
+  return children;
 }

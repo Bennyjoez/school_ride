@@ -20,7 +20,8 @@
     "react-hook-form": "^7.75.0",
     "react-leaflet": "^5.0.0",
     "react-redux": "^9.2.0",
-    "react-router-dom": "^7.15.0"
+    "react-router-dom": "^7.15.0",
+    "redux-persist": "^6.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
