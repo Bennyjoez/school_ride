@@ -20,6 +20,10 @@ class UserSerializer(serializers.ModelSerializer):
             'school': {'write_only': True, 'required': False},
         }
  
+    def update(self, instance, validated_data):
+        validated_data.pop('school', None)
+        return super().update(instance, validated_data)
+ 
  
 class UserCreateSerializer(serializers.ModelSerializer):
     """Used for POST /users/ - accepts a password and hashes it."""

@@ -125,7 +125,7 @@ function useLiveFleet(activeTrips, accessToken, onPing) {
 
 export function FleetMap({
   height = "420px",
-  defaultCenter = [-1.2921, 36.8219],
+  defaultCenter = [-1.2921, 36.8219], // TODO: set to device's location. E.g. via IP geolocation or browser geolocation API (with permission)
 }) {
   const accessToken = useSelector(selectAccessToken);
   const mapRef = useRef(null); // DOM node
