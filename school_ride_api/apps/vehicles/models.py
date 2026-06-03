@@ -47,8 +47,8 @@ class Route(models.Model):
 class Stop(models.Model):
     route = models.ForeignKey(Route, on_delete=models.CASCADE, related_name='stops')
     name = models.CharField(max_length=100)
-    latitude = models.DecimalField(max_digits=9, decimal_places=6)
-    longitude = models.DecimalField(max_digits=9, decimal_places=6)
+    latitude = models.DecimalField(max_digits=10, decimal_places=7)
+    longitude = models.DecimalField(max_digits=10, decimal_places=7)
     sequence = models.PositiveSmallIntegerField()
     eta_minutes = models.PositiveSmallIntegerField(default=0, help_text='Minutes from route start')
 

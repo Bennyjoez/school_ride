@@ -29,8 +29,8 @@ class Trip(models.Model):
 
 class GPSPing(models.Model):
     trip = models.ForeignKey(Trip, on_delete=models.CASCADE, related_name='pings')
-    latitude = models.DecimalField(max_digits=9, decimal_places=6)
-    longitude = models.DecimalField(max_digits=9, decimal_places=6)
+    latitude = models.DecimalField(max_digits=10, decimal_places=7)
+    longitude = models.DecimalField(max_digits=10, decimal_places=7)
     speed_kmh = models.FloatField(default=0)
     heading = models.FloatField(default=0, help_text='Degrees 0–360')
     recorded_at = models.DateTimeField()

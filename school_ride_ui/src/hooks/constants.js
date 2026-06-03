@@ -106,3 +106,10 @@ export const DIRECTION_BADGE = {
   PM: "amber",
   BOTH: "purple",
 };
+
+export const TRIP_STATUS_CONFIG = {
+  scheduled: { label: "Scheduled", color: "blue" },
+  active: { label: "Active", color: "green" },
+  completed: { label: "Completed", color: "gray" },
+  cancelled: { label: "Cancelled", color: "red" },
+};
