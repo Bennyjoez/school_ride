@@ -15,6 +15,7 @@ import TripsPage from "../pages/trips/TripsPage";
 import TripDetailPage from "../pages/trips/TripDetailPage";
 import ProfilePage from "../pages/profile/ProfilePage";
 import NotFoundPage from "../pages/NotFoundPage";
+import LiveMapPage from "../pages/trips/Livemappage";
 
 export const router = createBrowserRouter([
   {
@@ -39,6 +40,7 @@ export const router = createBrowserRouter([
       { path: "trips", element: <TripsPage /> },
       { path: "trips/:id", element: <TripDetailPage /> },
       { path: "profile", element: <ProfilePage /> },
+      { path: "trips/:id/map", element: <LiveMapPage /> },
       { path: "*", element: <NotFoundPage /> },
     ],
   },
