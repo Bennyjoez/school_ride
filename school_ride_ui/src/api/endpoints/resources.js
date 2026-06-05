@@ -59,3 +59,8 @@ export const checkinEvent = (id, data) =>
   api.post(`/trips/${id}/checkin/`, data);
 export const postPing = (id, data) => api.post(`/trips/${id}/ping/`, data);
 export const getTripPings = (id) => api.get(`/trips/${id}/pings/`);
+
+// Notifications
+export const getNotifications = (params = {}) => api.get("/notifications/", { params });
+export const getUnreadCount = () => api.get("/notifications/unread_count/");
+export const getNotification = (id) =>  api.get(`/notifications/${id}/`);

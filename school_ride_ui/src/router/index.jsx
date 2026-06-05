@@ -16,6 +16,7 @@ import TripDetailPage from "../pages/trips/TripDetailPage";
 import ProfilePage from "../pages/profile/ProfilePage";
 import NotFoundPage from "../pages/NotFoundPage";
 import LiveMapPage from "../pages/trips/Livemappage";
+import NotificationsPage from "../pages/notifications/NotificationPage";
 
 export const router = createBrowserRouter([
   {
@@ -40,7 +41,8 @@ export const router = createBrowserRouter([
       { path: "trips", element: <TripsPage /> },
       { path: "trips/:id", element: <TripDetailPage /> },
       { path: "profile", element: <ProfilePage /> },
-      { path: "trips/:id/map", element: <LiveMapPage /> },
+      { path: "trips/:id/map", element: <LiveMapPage /> }, // TODO: Add a button to link to the livemap page from the trip detail page and sidebar
+      { path: "notifications", element: <NotificationsPage /> },
       { path: "*", element: <NotFoundPage /> },
     ],
   },

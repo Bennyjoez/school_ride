@@ -3,6 +3,7 @@ import { NavLink, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { logout, selectCurrentUser } from '../../store/authSlice'
 import { Badge } from '../ui'
+import { NotificationBell } from '../../pages/notifications/NotificationBell'
 
 const ROLE_LABELS = {
   '1': { label: 'Admin',    color: 'purple' },
@@ -154,6 +155,8 @@ export function Sidebar() {
           </NavLink>
         ))}
       </nav>
+
+      <NotificationBell />
 
       {/* User info + logout */}
       <div className="px-3 py-4 border-t border-gray-100">
