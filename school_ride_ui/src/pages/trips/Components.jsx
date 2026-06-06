@@ -1,17 +1,16 @@
-import { useState, useMemo } from 'react'
+import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
 import { format } from 'date-fns'
 import {
-  getTrips, createTrip, getRoutes, getVehicles,
+  createTrip, getRoutes, getVehicles,
 } from '../../api/endpoints/resources'
 import { getDrivers } from '../../api/endpoints/users'
 import {
-  PageHeader, Button, Input, Select,
-  Modal, Badge, ErrorMessage, Spinner,
+  Button, Input, Select,
+  Modal, Badge, ErrorMessage,
 } from '../../components/ui'
-import { RoleGuard } from '../../components/layout/ProtectedRoute'
 import { TRIP_STATUS_BADGE } from '../../hooks/constants'
 
 

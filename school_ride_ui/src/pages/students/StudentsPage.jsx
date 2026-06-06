@@ -1,33 +1,16 @@
 // src/pages/students/StudentsPage.jsx
 import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
 import {
   getStudents,
-  createStudent,
-  updateStudent,
   deactivateStudent,
-  generateCode,
-  getStudentRoutes,
-  assignStudentRoute,
-  removeStudentRoute,
-  getRoutes,
 } from "../../api/endpoints/resources";
-import { getUsers } from "../../api/endpoints/users";
 import {
   PageHeader,
   Button,
-  Input,
-  Select,
-  Modal,
   ConfirmModal,
-  Badge,
-  ErrorMessage,
-  Spinner,
 } from "../../components/ui";
 import { RoleGuard } from "../../components/layout/ProtectedRoute";
-import { DIRECTION_LABEL } from "../../hooks/constants";
-import { format } from "date-fns";
 import {
   StudentFormModal,
   StudentsTable,
@@ -167,11 +150,13 @@ export default function StudentsPage() {
         onCode={(s) => setCodeModal({ open: true, student: s })}
       />
 
-      <StudentFormModal
-        open={formModal.open}
-        onClose={() => setFormModal({ open: false, student: null })}
-        student={formModal.student}
-      />
+      {formModal.open && (
+        <StudentFormModal
+          open={formModal.open}
+          onClose={() => setFormModal({ open: false, student: null })}
+          student={formModal.student}
+        />
+      )}
 
       <RouteAssignmentModal
         open={routeModal.open}

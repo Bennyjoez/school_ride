@@ -1,11 +1,9 @@
-import { useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import {
-  getStudents,
   createStudent,
   updateStudent,
-  deactivateStudent,
   generateCode,
   getStudentRoutes,
   assignStudentRoute,
@@ -14,19 +12,16 @@ import {
 } from "../../api/endpoints/resources";
 import { getUsers } from "../../api/endpoints/users";
 import {
-  PageHeader,
   Button,
   Input,
   Select,
   Modal,
-  ConfirmModal,
   Badge,
   ErrorMessage,
   Spinner,
 } from "../../components/ui";
 import { RoleGuard } from "../../components/layout/ProtectedRoute";
 import { DIRECTION_LABEL } from "../../hooks/constants";
-import { format } from "date-fns";
 
 // Student form modal
 export function StudentFormModal({ open, onClose, student }) {
@@ -50,20 +45,25 @@ export function StudentFormModal({ open, onClose, student }) {
     enabled: open,
   });
 
-  useState(() => {
-    if (open) {
-      setApiError(null);
-      reset(
-        isEdit
-          ? {
-              full_name: student.full_name,
-              grade: student.grade,
-              guardian: student.guardian ?? "",
-            }
-          : {},
-      );
-    }
-  }, [open, student]);
+  useEffect(() => {
+    if (!open) return;
+
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setApiError(null);
+    reset(
+      isEdit
+        ? {
+            full_name: student.full_name,
+            grade: student.grade,
+            guardian: student.guardian ?? "",
+          }
+        : {
+            full_name: "",
+            grade: "",
+            guardian: "",
+          },
+    );
+  }, [isEdit, open, reset, student, guardians]);
 
   const mutation = useMutation({
     mutationFn: (data) => {
@@ -127,7 +127,6 @@ export function StudentFormModal({ open, onClose, student }) {
 export function RouteAssignmentModal({ open, onClose, student }) {
   const queryClient = useQueryClient();
   const [apiError, setApiError] = useState(null);
-  const [selectedRoute, setSelectedRoute] = useState("");
 
   const { data: routes } = useQuery({
     queryKey: ["routes"],
@@ -148,20 +147,19 @@ export function RouteAssignmentModal({ open, onClose, student }) {
     watch,
     formState: { errors, isSubmitting },
   } = useForm();
+  // eslint-disable-next-line react-hooks/incompatible-library
   const watchedRoute = watch("route");
 
   // Stops for the selected route
-  const selectedRouteObj = routes?.find(
-    (r) => String(r.id) === String(watchedRoute),
-  );
+  const selectedRouteObj = routes?.find((r) => String(r.id) === String(watchedRoute));
   const stops = selectedRouteObj?.stops ?? [];
 
-  useState(() => {
-    if (open) {
-      setApiError(null);
-      reset({});
-    }
-  }, [open]);
+  useEffect(() => {
+    if (!open) return;
+
+    setApiError(null);
+    reset({});
+  }, [open, reset]);
 
   const assignMutation = useMutation({
     mutationFn: (data) => assignStudentRoute(student.id, data),

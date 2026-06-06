@@ -62,7 +62,7 @@ export function useWebSocket(
     return () => {
       ws.close();
     };
-  }, [tripId, accessToken]);
+  }, [tripId, accessToken, onOpen, onGpsPing, onEtaUpdate, onClose]);
 
   return { disconnect };
 }

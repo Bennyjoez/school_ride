@@ -1,13 +1,10 @@
-import { useState, useMemo, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import { useSelector } from 'react-redux'
+import { useSelector } from "react-redux";
 import {
-  getRoutes,
   createRoute,
   updateRoute,
-  deleteRoute,
-  getStops,
   createStop,
   updateStop,
   deleteStop,
@@ -16,7 +13,6 @@ import {
 } from "../../api/endpoints/resources";
 import { getDrivers } from "../../api/endpoints/users";
 import {
-  PageHeader,
   Button,
   Input,
   Select,
@@ -24,16 +20,17 @@ import {
   ConfirmModal,
   Badge,
   ErrorMessage,
-  Spinner,
 } from "../../components/ui";
 import { RoleGuard } from "../../components/layout/ProtectedRoute";
-import { DIRECTION_BADGE, DIRECTION_LABEL, DIRECTION_OPTIONS } from "../../hooks/constants";
-import { format } from "date-fns";
-import { selectIsAdmin, selectCurrentUser } from "../../store/authSlice";
+import {
+  DIRECTION_BADGE,
+  DIRECTION_LABEL,
+  DIRECTION_OPTIONS,
+} from "../../hooks/constants";
+import { selectIsAdmin } from "../../store/authSlice";
 
 // Route form modal
 export function RouteFormModal({ open, onClose, route }) {
-  const user = useSelector(selectCurrentUser);
   const isAdmin = useSelector(selectIsAdmin);
   const isEdit = Boolean(route);
   const queryClient = useQueryClient();
@@ -66,6 +63,7 @@ export function RouteFormModal({ open, onClose, route }) {
 
   useEffect(() => {
     if (open) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setApiError(null);
       reset(
         isEdit
@@ -82,7 +80,7 @@ export function RouteFormModal({ open, onClose, route }) {
             },
       );
     }
-  }, [open, route]);
+  }, [isEdit, open, reset, route]);
 
   const mutation = useMutation({
     mutationFn: (data) => {
@@ -145,11 +143,13 @@ export function RouteFormModal({ open, onClose, route }) {
           <Select
             label="Assign School"
             error={errors.school?.message}
-            {...register('school', { required: 'School is required' })}
+            {...register("school", { required: "School is required" })}
           >
             <option value="">Select a school</option>
-            {schools?.map(s => (
-              <option key={s.id} value={s.id}>{s.name}</option>
+            {schools?.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.name}
+              </option>
             ))}
           </Select>
         )}
@@ -205,6 +205,7 @@ export function StopFormModal({ open, onClose, routeId, stop }) {
 
   useEffect(() => {
     if (open) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setApiError(null);
       reset(
         isEdit
@@ -221,7 +222,7 @@ export function StopFormModal({ open, onClose, routeId, stop }) {
             },
       );
     }
-  }, [open, stop]);
+  }, [isEdit, open, reset, stop]);
 
   const mutation = useMutation({
     mutationFn: (data) =>

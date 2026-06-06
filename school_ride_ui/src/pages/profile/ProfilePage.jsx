@@ -1,17 +1,13 @@
 // src/pages/profile/ProfilePage.jsx
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useDispatch, useSelector } from "react-redux";
-import { useForm } from "react-hook-form";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useSelector } from "react-redux";
 import { format } from "date-fns";
-import { getMe, updateMe, changePassword } from "../../api/endpoints/users";
+import { getMe } from "../../api/endpoints/users";
 import {
-  setCredentials,
   selectCurrentUser,
-  selectAccessToken,
-  selectRefreshToken,
 } from "../../store/authSlice";
-import { Button, Input, ErrorMessage, Badge } from "../../components/ui";
+import { Badge } from "../../components/ui";
 import { ROLE_LABELS, ROLE_BADGE_VARIANT } from "../../hooks/constants";
 import { Avatar, ChangePasswordForm, EditProfileForm, InfoRow, SectionCard, Tabs } from "./Components";
 

@@ -29,8 +29,7 @@ import { format } from "date-fns";
 import { useSelector } from "react-redux";
 import { selectIsAdmin } from "../../store/authSlice";
 
-
-// Vehicle form modal 
+// Vehicle form modal
 
 export function VehicleFormModal({ open, onClose, vehicle }) {
   const isAdmin = useSelector(selectIsAdmin);
@@ -47,6 +46,7 @@ export function VehicleFormModal({ open, onClose, vehicle }) {
 
   useEffect(() => {
     if (open) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setApiError(null);
       reset(
         isEdit
@@ -60,7 +60,7 @@ export function VehicleFormModal({ open, onClose, vehicle }) {
           : { vehicle_type: "1", status: "available" },
       );
     }
-  }, [open, vehicle]);
+  }, [isEdit, open, reset, vehicle]);
 
   const { data: schools } = useQuery({
     queryKey: ["schools"],
@@ -142,11 +142,13 @@ export function VehicleFormModal({ open, onClose, vehicle }) {
           <Select
             label="Assign School"
             error={errors.school?.message}
-            {...register('school', { required: 'School is required' })}
+            {...register("school", { required: "School is required" })}
           >
             <option value="">Select a school</option>
-            {schools?.map(s => (
-              <option key={s.id} value={s.id}>{s.name}</option>
+            {schools?.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.name}
+              </option>
             ))}
           </Select>
         )}
@@ -163,9 +165,7 @@ export function VehicleFormModal({ open, onClose, vehicle }) {
   );
 }
 
-
-
-// Assign driver modal 
+// Assign driver modal
 export function AssignDriverModal({ open, onClose, vehicle }) {
   const queryClient = useQueryClient();
   const [apiError, setApiError] = useState(null);
@@ -243,9 +243,7 @@ export function AssignDriverModal({ open, onClose, vehicle }) {
   );
 }
 
-
-
-// Vehicles table 
+// Vehicles table
 
 export function VehiclesTable({
   vehicles,

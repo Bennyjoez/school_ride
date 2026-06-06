@@ -19,7 +19,7 @@ import {
   QuickLink,
   EmptyState,
   TripStatusBadge,
-} from "./components";
+} from "./Components";
 import { ROLE_LABELS } from "../../hooks/constants";
 import { FleetMap } from "./Fleetmap";
 

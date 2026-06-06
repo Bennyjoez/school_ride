@@ -1,7 +1,7 @@
 // src/pages/dashboard/components/FleetMap.jsx
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { format } from "date-fns";
@@ -98,7 +98,9 @@ function useLiveFleet(activeTrips, accessToken, onPing) {
           if (msg.type === "gps_ping") {
             onPing(trip.id, trip.route_name, msg.data);
           }
-        } catch {}
+        } catch {
+          // ignore malformed messages
+        }
       };
 
       socketsRef.current[trip.id] = ws;
@@ -118,7 +120,7 @@ function useLiveFleet(activeTrips, accessToken, onPing) {
       Object.values(socketsRef.current).forEach((ws) => ws?.close());
       socketsRef.current = {};
     };
-  }, [activeTrips, accessToken]);
+  }, [activeTrips, accessToken, onPing]);
 }
 
 //  Main FleetMap component
@@ -146,8 +148,8 @@ export function FleetMap({
     refetchInterval: 60_000,
   });
 
-  const activeTrips = trips?.filter((t) => t.status === "active") ?? [];
-  const scheduledTrips = trips?.filter((t) => t.status === "scheduled") ?? [];
+  const activeTrips = useMemo(() => trips?.filter((t) => t.status === "active") ?? [], [trips]);
+  const scheduledTrips = useMemo(() => trips?.filter((t) => t.status === "scheduled") ?? [], [trips]);
 
   // Handle incoming GPS ping — update positions state
   const handlePing = useCallback((tripId, routeName, data) => {
@@ -173,7 +175,7 @@ export function FleetMap({
       leafletRef.current?.remove();
       leafletRef.current = null;
     };
-  }, []);
+  }, [defaultCenter]);
 
   // Update markers whenever positions change
   useEffect(() => {
@@ -234,7 +236,7 @@ export function FleetMap({
         // Stops are nested on the route — draw from route.stops if available
       }
     });
-  }, [positions, activeTrips]);
+  }, [positions, activeTrips, trips]);
 
   // Draw stop markers when trips data loads
   useEffect(() => {

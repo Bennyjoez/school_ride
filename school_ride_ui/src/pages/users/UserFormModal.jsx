@@ -5,7 +5,7 @@ import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { createUser, updateUser } from "../../api/endpoints/users";
 import { getSchools } from "../../api/endpoints/resources";
 import { useSelector } from "react-redux";
-import { selectCurrentUser, selectIsAdmin } from "../../store/authSlice";
+import { selectIsAdmin } from "../../store/authSlice";
 import {
   Modal,
   Button,
@@ -18,7 +18,6 @@ import { ADMIN_USER_TYPES, USER_TYPES } from "../../hooks/constants";
 
 export function UserFormModal({ open, onClose, user }) {
   const isEdit = Boolean(user);
-  const currentUser = useSelector(selectCurrentUser);
   const isAdmin = useSelector(selectIsAdmin);
   const queryClient = useQueryClient();
   const [apiError, setApiError] = useState(null);
@@ -39,6 +38,7 @@ export function UserFormModal({ open, onClose, user }) {
   // Populate form when editing
   useEffect(() => {
     if (open) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setApiError(null);
       reset(
         isEdit
@@ -53,7 +53,7 @@ export function UserFormModal({ open, onClose, user }) {
           : {},
       );
     }
-  }, [open, user]);
+  }, [isEdit, open, reset, user]);
 
   const mutation = useMutation({
     mutationFn: (data) =>

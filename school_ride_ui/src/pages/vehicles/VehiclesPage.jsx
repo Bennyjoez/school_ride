@@ -1,35 +1,16 @@
 // src/pages/vehicles/VehiclesPage.jsx
 import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
 import {
   getVehicles,
-  createVehicle,
-  updateVehicle,
   deleteVehicle,
-  assignDriver,
 } from "../../api/endpoints/resources";
-import { getDrivers } from "../../api/endpoints/users";
 import {
   PageHeader,
   Button,
-  Input,
-  Select,
-  Modal,
   ConfirmModal,
-  Badge,
-  ErrorMessage,
-  Spinner,
 } from "../../components/ui";
 import { RoleGuard } from "../../components/layout/ProtectedRoute";
-import {
-  VEHICLE_STATUS_LABEL,
-  VEHICLE_STATUS_BADGE,
-  VEHICLE_TYPE_LABEL,
-  VEHICLE_STATUS_OPTIONS,
-  VEHICLE_TYPE_OPTIONS
-} from "../../hooks/constants";
-import { format } from "date-fns";
 import { AssignDriverModal, VehicleFormModal, VehiclesTable } from "./Components";
 
 // Constants 

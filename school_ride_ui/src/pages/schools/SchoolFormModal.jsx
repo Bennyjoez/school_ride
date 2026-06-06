@@ -20,6 +20,7 @@ export function SchoolFormModal({ open, onClose, school }) {
 
   useEffect(() => {
     if (open) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setApiError(null);
       reset(
         isEdit
@@ -33,7 +34,7 @@ export function SchoolFormModal({ open, onClose, school }) {
             },
       );
     }
-  }, [open, school]);
+  }, [isEdit, open, reset, school]);
 
   const mutation = useMutation({
     mutationFn: (data) =>

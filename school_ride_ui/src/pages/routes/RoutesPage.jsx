@@ -1,33 +1,17 @@
 // src/pages/vehicles/RoutesPage.jsx
 import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
 import {
   getRoutes,
-  createRoute,
-  updateRoute,
   deleteRoute,
-  getStops,
-  createStop,
-  updateStop,
-  deleteStop,
-  getVehicles,
 } from "../../api/endpoints/resources";
-import { getDrivers } from "../../api/endpoints/users";
 import {
   PageHeader,
   Button,
-  Input,
-  Select,
-  Modal,
   ConfirmModal,
-  Badge,
-  ErrorMessage,
-  Spinner,
 } from "../../components/ui";
 import { RoleGuard } from "../../components/layout/ProtectedRoute";
-import { DIRECTION_LABEL, DIRECTION_OPTIONS } from "../../hooks/constants";
-import { format } from "date-fns";
+import { DIRECTION_OPTIONS } from "../../hooks/constants";
 import { RouteFormModal, RoutesTable } from "./Components";
 
 // Main page

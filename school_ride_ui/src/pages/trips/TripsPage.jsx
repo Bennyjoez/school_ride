@@ -1,28 +1,14 @@
 // src/pages/trips/TripsPage.jsx
 import { useState, useMemo } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
-import { format } from "date-fns";
+import { useQuery } from "@tanstack/react-query";
 import {
   getTrips,
-  createTrip,
-  getRoutes,
-  getVehicles,
 } from "../../api/endpoints/resources";
-import { getDrivers } from "../../api/endpoints/users";
 import {
   PageHeader,
   Button,
-  Input,
-  Select,
-  Modal,
-  Badge,
-  ErrorMessage,
-  Spinner,
 } from "../../components/ui";
 import { RoleGuard } from "../../components/layout/ProtectedRoute";
-import { TRIP_STATUS_BADGE } from "../../hooks/constants";
 import { TripFormModal, TripsTable } from "./Components";
 
 // Main page

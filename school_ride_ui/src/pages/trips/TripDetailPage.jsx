@@ -1,6 +1,6 @@
 // src/pages/trips/TripDetailPage.jsx
 import { useEffect, useRef, useState, useCallback } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { format, formatDistanceToNow } from "date-fns";
@@ -17,21 +17,14 @@ import {
   postPing,
   getTripPings,
 } from "../../api/endpoints/resources";
-import {
-  Button,
-  Spinner,
-  Badge,
-  PageHeader,
-  ErrorMessage,
-} from "../../components/ui";
-import { RoleGuard } from "../../components/layout/ProtectedRoute";
+import { Button, Spinner, Badge, ErrorMessage } from "../../components/ui";
 import { TRIP_STATUS_CONFIG } from "../../hooks/constants";
 
 //  constants
 const EVENT_LABEL = { board: "Boarded", alight: "Alighted" };
 const EVENT_COLOR = { board: "green", alight: "orange" };
 
-// Leaflet helpers 
+// Leaflet helpers
 
 function makeBusIcon(heading = 0) {
   const svg = `
@@ -116,7 +109,7 @@ function TripMiniMap({ trip, livePosition }) {
       leaflet.current?.remove();
       leaflet.current = null;
     };
-  }, []);
+  }, [trip?.stops]);
 
   // Update bus marker on live position changes
   useEffect(() => {
@@ -154,7 +147,7 @@ function TripMiniMap({ trip, livePosition }) {
   );
 }
 
-// GPS status bar (Driver only) 
+// GPS status bar (Driver only)
 
 function GpsStatusBar({ pingCount, lastPing, isSending }) {
   return (
@@ -191,7 +184,7 @@ function GpsStatusBar({ pingCount, lastPing, isSending }) {
   );
 }
 
-// Check-in form 
+// Check-in form
 
 function CheckInForm({ trip, onSuccess }) {
   const queryClient = useQueryClient();
@@ -297,11 +290,10 @@ function CheckInForm({ trip, onSuccess }) {
   );
 }
 
-//  Main page 
+//  Main page
 
 export default function TripDetailPage() {
   const { id } = useParams();
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const currentUser = useSelector(selectCurrentUser);
 
@@ -311,12 +303,12 @@ export default function TripDetailPage() {
   const [lastGps, setLastGps] = useState(null);
   const [checkinSuccess, setCheckinSuccess] = useState(false);
 
-  //  GPS ping loop refs (Driver only) 
+  //  GPS ping loop refs (Driver only)
   const watchIdRef = useRef(null);
   const pingTimerRef = useRef(null);
   const pendingPos = useRef(null);
 
-  //  Data fetching 
+  //  Data fetching
   const {
     data: trip,
     isLoading,
@@ -324,17 +316,19 @@ export default function TripDetailPage() {
   } = useQuery({
     queryKey: ["trip", id],
     queryFn: () => getTrip(id).then((r) => r.data),
-    refetchInterval: (query) => (query?.state?.data?.status === "active" ? 15_000 : false),
+    refetchInterval: (query) =>
+      query?.state?.data?.status === "active" ? 15_000 : false,
   });
 
   const { data: pings = [] } = useQuery({
     queryKey: ["trip-pings", id],
     queryFn: () => getTripPings(id).then((r) => r.data),
     enabled: !!trip,
-    refetchInterval: (query) => (query?.state?.data?.status === "active" ? 10_000 : false),
+    refetchInterval: (query) =>
+      query?.state?.data?.status === "active" ? 10_000 : false,
   });
 
-  //  Start / End mutations 
+  //  Start / End mutations
   const startMutation = useMutation({
     mutationFn: () => startTrip(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["trip", id] }),
@@ -547,6 +541,7 @@ export default function TripDetailPage() {
         <GpsStatusBar
           pingCount={pingCount}
           lastPing={lastGps}
+          // eslint-disable-next-line react-hooks/refs
           isSending={!!watchIdRef.current}
         />
       )}
