@@ -7,10 +7,13 @@ logs
 */pnpm-debug.log*
 */lerna-debug.log*
 
+# Frontend build / dependencies
 */node_modules
 */dist
 */dist-ssr
+*/build
 *.local
+school_ride_ui/.eslintcache
 
 # Editor directories and files
 */.vscode/*
@@ -22,8 +25,37 @@ logs
 *.njsproj
 *.sln
 *.sw?
+
+# Environment / secrets
+# Block all .env files …
 .env
-env
+.env.local
+.env.production
+.env.staging
+# … except placeholder templates (safe to commit — contain no real values)
+!.env.default
+!.env.example
+
+# Virtual environment
+# Use trailing slash so only directories named env/ are matched,
+# not files or folders like "environ.py"
+env/
+venv/
+.venv/
+
+# Private key / certificate files
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+
+# Firebase / Google service account credentials
+serviceAccountKey.json
+google-services.json
+GoogleService-Info.plist
+firebase_adminsdk*.json
 
 # Python bytecode and cache
 __pycache__/
@@ -34,8 +66,16 @@ __pycache__/
 .mypy_cache/
 .ruff_cache/
 
-# Django specific local files
+# Django specific
 db.sqlite3
-.env
 local_settings.py
 media/
+staticfiles/
+mediafiles/
+
+# Celery Beat local runtime state
+celerybeat-schedule
+celerybeat-schedule.db
+celerybeat-schedule.dir
+celerybeat-schedule.bak
+celerybeat-schedule.dat

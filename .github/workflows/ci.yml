@@ -1,0 +1,135 @@
+#
+# Triggers on every push and pull request to main and develop.
+# Runs three jobs in parallel:
+#   1. frontend-lint — ESLint on school_ride_ui/
+#   2. secrets-scan — gitleaks scans entire repo for leaked credentials
+#   3. env-guard — confirms no .env files were committed
+
+name: CI — Lint & Security
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+# Cancel any in-progress run for the same branch when a new push arrives
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Job 1: ESLint (frontend)
+  frontend-lint:
+    name: ESLint — school_ride_ui
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: school_ride_ui # all steps run inside the UI folder
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: school_ride_ui/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npx eslint . --max-warnings=0
+        # --max-warnings=0 means any warning is treated as a failure.
+        # Lower this to a number (e.g. 10) during initial adoption if needed.
+
+  # Job 2: Secrets scan (gitleaks)
+  secrets-scan:
+    name: Secrets scan — gitleaks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          # Full history so gitleaks can scan every commit, not just HEAD
+          fetch-depth: 0
+
+      - name: Run gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # gitleaks scans for:
+        #   - AWS keys, GCP service accounts, Azure secrets
+        #   - Django SECRET_KEY values
+        #   - JWT tokens committed as literals
+        #   - Twilio / SendGrid / Firebase / FCM keys
+        #   - Private SSH/PEM keys
+        #   - Generic high-entropy strings that look like secrets
+        #
+        # Custom rules are in .gitleaks.toml at the repo root.
+
+  # Job 3: .env file guard
+  env-guard:
+    name: .env file guard
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Fail if any .env file was committed
+        run: |
+          # Search the entire repo for committed .env files.
+          # .env.default and .env.example are allowed — they contain only
+          # placeholder values and serve as documentation.
+          FOUND=$(git ls-files | grep -E '(^|/)\.env$' || true)
+
+          if [ -n "$FOUND" ]; then
+            echo "❌  The following .env file(s) are tracked by git:"
+            echo "$FOUND"
+            echo ""
+            echo "Remove them with:"
+            echo "  git rm --cached <file>"
+            echo "  echo '<file>' >> .gitignore"
+            echo "  git commit -m 'Remove committed .env file'"
+            exit 1
+          else
+            echo "✅  No committed .env files found."
+          fi
+
+      - name: Fail if secrets-like files were committed
+        run: |
+          # Catch other common credential file names
+          PATTERNS=(
+            "*.pem"
+            "*.key"
+            "*.p12"
+            "*.pfx"
+            "serviceAccountKey.json"
+            "google-services.json"
+            "GoogleService-Info.plist"
+            "firebase_adminsdk*.json"
+          )
+
+          FOUND=""
+          for PATTERN in "${PATTERNS[@]}"; do
+            MATCHES=$(git ls-files | grep -E "$PATTERN" || true)
+            if [ -n "$MATCHES" ]; then
+              FOUND="$FOUND\n$MATCHES"
+            fi
+          done
+
+          if [ -n "$FOUND" ]; then
+            echo "❌  Potential credential files are tracked by git:"
+            echo -e "$FOUND"
+            echo ""
+            echo "Add these to .gitignore and remove them with git rm --cached"
+            exit 1
+          else
+            echo "✅  No credential files found."
+          fi

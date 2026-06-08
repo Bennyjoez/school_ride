@@ -1,0 +1,82 @@
+# Extends gitleaks' built-in ruleset with SchoolRide-specific patterns.
+# Built-in rules already catch: AWS, GCP, Azure, GitHub tokens, Stripe,
+# Twilio, SendGrid, SSH keys, PEM blocks, JWT literals, and more.
+
+title = "SchoolFleet Gitleaks Config"
+
+# Files / paths to always ignore
+[allowlist]
+  description = "Global allowlist"
+  paths = [
+    # Dependency lockfiles contain hashes that look like secrets
+    "package-lock.json",
+    "yarn.lock",
+    # Test fixtures with known-fake credentials
+    "**/__tests__/**",
+    "**/*.test.js",
+    "**/*.spec.js",
+    # The default env template — contains only placeholders
+    ".env.default",
+    ".env.example",
+  ]
+
+# Custom rules
+
+# Django SECRET_KEY — long random string assigned to SECRET_KEY
+[[rules]]
+  id          = "django-secret-key"
+  description = "Django SECRET_KEY hardcoded in source"
+  regex       = '''SECRET_KEY\s*=\s*["'][^"']{20,}["']'''
+  tags        = ["django", "secret"]
+
+# FCM / Firebase Cloud Messaging server key
+[[rules]]
+  id          = "fcm-server-key"
+  description = "Firebase Cloud Messaging server key"
+  regex       = '''AAAA[A-Za-z0-9_\-]{7}:[A-Za-z0-9_\-]{140}'''
+  tags        = ["firebase", "fcm"]
+
+# Twilio auth token (34-char hex string after common variable names)
+[[rules]]
+  id          = "twilio-auth-token"
+  description = "Twilio auth token hardcoded"
+  regex       = '''(?i)(twilio.{0,20})?auth_?token\s*[:=]\s*["'][0-9a-f]{32,34}["']'''
+  tags        = ["twilio"]
+
+# SendGrid API key (starts with SG.)
+[[rules]]
+  id          = "sendgrid-api-key"
+  description = "SendGrid API key"
+  regex       = '''SG\.[A-Za-z0-9_\-]{22,}\.[A-Za-z0-9_\-]{43,}'''
+  tags        = ["sendgrid", "email"]
+
+# Generic hardcoded password assignment
+[[rules]]
+  id          = "generic-password"
+  description = "Hardcoded password in source"
+  regex       = '''(?i)password\s*[:=]\s*["'][^"']{6,}["']'''
+  tags        = ["password"]
+  # Allow obvious placeholder values
+  [rules.allowlist]
+    regexes = [
+      '''(?i)password\s*[:=]\s*["'](your.?password|change.?me|placeholder|example|test|dummy|xxx+)["']''',
+    ]
+
+# Generic hardcoded API key assignment
+[[rules]]
+  id          = "generic-api-key"
+  description = "Hardcoded API key in source"
+  regex       = '''(?i)api_?key\s*[:=]\s*["'][A-Za-z0-9+/=_\-]{16,}["']'''
+  tags        = ["api-key"]
+  [rules.allowlist]
+    regexes = [
+      # Allow obvious placeholders
+      '''(?i)["'](your.?key|change.?me|placeholder|example|xxx+)["']''',
+    ]
+
+# PostgreSQL / database connection string with password
+[[rules]]
+  id          = "db-connection-string"
+  description = "Database connection string with embedded password"
+  regex       = '''(?i)(postgres|postgresql|mysql|mongodb)\+?:\/\/[^:]+:[^@]{4,}@'''
+  tags        = ["database", "credentials"]
