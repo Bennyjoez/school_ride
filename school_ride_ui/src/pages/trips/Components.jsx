@@ -47,6 +47,8 @@ export function TripFormModal({ open, onClose }) {
     mutationFn: data => createTrip(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['trips'] })
+      setApiError(null)
+      reset()
       onClose()
     },
     onError: err => setApiError(err),
@@ -65,7 +67,7 @@ export function TripFormModal({ open, onClose }) {
           ))}
         </Select>
 
-        <Input label="Trip date" type="date" error={errors.trip_date?.message}
+        <Input label="Trip date" type="datetime-local" error={errors.trip_date?.message}
           {...register('trip_date', { required: 'Date is required' })} />
 
         <Select label="Vehicle" error={errors.vehicle?.message}

@@ -28,17 +28,30 @@ class TripSerializer(serializers.ModelSerializer):
     driver_name = serializers.CharField(source='driver.name', read_only=True)
     vehicle_plate = serializers.CharField(source='vehicle.license_plate', read_only=True)
     pings_count = serializers.IntegerField(source='pings.count', read_only=True)
+    stops = serializers.SerializerMethodField(source='route.stops', read_only=True)
  
     class Meta:
         model = Trip
         fields = [
             'id', 'route', 'route_name', 'vehicle', 'vehicle_plate',
             'driver', 'driver_name', 'trip_date', 'status',
-            'actual_start', 'actual_end', 'pings_count', 'created_at',
+            'actual_start', 'actual_end', 'stops', 'pings_count', 'created_at',
         ]
         read_only_fields = [
             'id', 'status', 'actual_start', 'actual_end',
-            'route_name', 'driver_name', 'vehicle_plate', 'pings_count', 'created_at',
+            'route_name', 'driver_name', 'vehicle_plate', 'pings_count', 'created_at', 'stops'
+        ]
+    
+    def get_stops(self, obj):
+        return [
+            {
+                'id': stop.id,
+                'name': stop.name,
+                'latitude': stop.latitude,
+                'longitude': stop.longitude,
+                'sequence': stop.sequence,
+            }
+            for stop in obj.route.stops.all().order_by('sequence').only('id', 'name', 'latitude', 'longitude', 'sequence')
         ]
  
     def validate(self, attrs):

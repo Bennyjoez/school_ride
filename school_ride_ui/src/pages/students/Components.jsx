@@ -74,6 +74,8 @@ export function StudentFormModal({ open, onClose, student }) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["students"] });
+      setApiError(null);
+      reset();
       onClose();
     },
     onError: (err) => setApiError(err),

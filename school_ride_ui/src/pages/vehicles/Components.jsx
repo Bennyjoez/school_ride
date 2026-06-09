@@ -73,6 +73,8 @@ export function VehicleFormModal({ open, onClose, vehicle }) {
       isEdit ? updateVehicle(vehicle.id, data) : createVehicle(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["vehicles"] });
+      setApiError(null);
+      reset();
       onClose();
     },
     onError: (err) => setApiError(err),

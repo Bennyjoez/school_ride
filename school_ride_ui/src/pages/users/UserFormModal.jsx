@@ -60,6 +60,8 @@ export function UserFormModal({ open, onClose, user }) {
       isEdit ? updateUser(user.id, data) : createUser(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
+      setApiError(null);
+      reset();
       onClose();
     },
     onError: (err) => setApiError(err),

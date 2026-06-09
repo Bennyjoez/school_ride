@@ -94,6 +94,8 @@ export function RouteFormModal({ open, onClose, route }) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["routes"] });
+      setApiError(null);
+      reset();
       onClose();
     },
     onError: (err) => setApiError(err),
@@ -229,6 +231,8 @@ export function StopFormModal({ open, onClose, routeId, stop }) {
       isEdit ? updateStop(routeId, stop.id, data) : createStop(routeId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["routes"] });
+      setApiError(null);
+      reset();
       onClose();
     },
     onError: (err) => setApiError(err),

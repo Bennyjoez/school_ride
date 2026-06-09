@@ -371,8 +371,7 @@ export default function TripDetailPage() {
 
   const sendPing = useCallback(async () => {
     if (!pendingPos.current) return;
-    const { latitude, longitude, speed, heading, accuracy } =
-      pendingPos.current;
+    const { latitude, longitude, speed, heading, accuracy } = pendingPos.current;
     try {
       await postPing(id, {
         latitude,
@@ -410,7 +409,11 @@ export default function TripDetailPage() {
       { enableHighAccuracy: true, maximumAge: 3000 },
     );
 
-    // Send pings every 5 seconds
+    // Send pings every 5 seconds  
+    // TODO: could make this more intelligent by sending a ping immediately on position change, then backing off to a regular interval after a successful ping
+    // TODO: handle the case where the driver temporarily loses GPS signal (e.g. goes through a tunnel) — maybe keep trying to send pings with the last known position, and mark them as "delayed" in the backend if they arrive much later than their recorded_at timestamp?
+    // TODO: consider batching pings if the driver is moving very fast (e.g. on a highway) to avoid sending too many HTTP requests
+
     pingTimerRef.current = setInterval(sendPing, 5000);
 
     return stopGpsPingLoop;

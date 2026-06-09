@@ -41,6 +41,8 @@ export function SchoolFormModal({ open, onClose, school }) {
       isEdit ? updateSchool(school.id, data) : createSchool(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["schools"] });
+      setApiError(null);
+      reset();
       onClose();
     },
     onError: (err) => setApiError(err),

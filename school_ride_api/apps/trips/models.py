@@ -22,7 +22,7 @@ class Trip(models.Model):
         limit_choices_to={"user_type": "5"},
         related_name="trips",
     )
-    trip_date = models.DateField()
+    trip_date = models.DateTimeField()
     status = models.CharField(
         max_length=10, choices=Status.choices, default=Status.SCHEDULED
     )
@@ -33,7 +33,8 @@ class Trip(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["route", "trip_date"], name="unique_route_trip_date"
+                fields=["route", "trip_date", "status", "vehicle"],
+                name="unique_route_trip_date",
             )
         ]
 

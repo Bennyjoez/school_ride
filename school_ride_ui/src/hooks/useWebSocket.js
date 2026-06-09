@@ -23,13 +23,17 @@ export function useWebSocket(
 
   const disconnect = useCallback(() => {
     if (wsRef.current) {
+      console.log("[WS] Manually disconnecting");
       wsRef.current.close();
       wsRef.current = null;
     }
   }, []);
 
   useEffect(() => {
-    if (!tripId || !accessToken) return;
+    if (!tripId || !accessToken){
+      console.warn("[WS] Missing tripId or accessToken, cannot connect");
+      return;
+    }
 
     const url = `ws://127.0.0.1:8000/ws/trips/${tripId}/track/?token=${accessToken}`;
     const ws = new WebSocket(url);
@@ -41,6 +45,7 @@ export function useWebSocket(
     };
 
     ws.onmessage = (event) => {
+      console.log(`[WS] Received message for trip ${tripId}`);
       try {
         const msg = JSON.parse(event.data);
         if (msg.type === "gps_ping") onGpsPing?.(msg.data);
