@@ -168,7 +168,7 @@ def notify_trip_started(trip) -> None:
     from apps.students.models import Student
 
     students = (
-        Student.objects.filter(route=trip.route)
+        Student.objects.filter(route_assignments__route=trip.route)
         .select_related("guardian")
         .exclude(guardian=None)
     )
@@ -192,7 +192,7 @@ def notify_trip_completed(trip) -> None:
     from apps.students.models import Student
 
     students = (
-        Student.objects.filter(route=trip.route)
+        Student.objects.filter(route_assignments__route=trip.route)
         .select_related("guardian")
         .exclude(guardian=None)
     )
@@ -251,7 +251,7 @@ def notify_eta_update(trip, stop, eta_minutes: int) -> None:
     from apps.students.models import Student
 
     students = (
-        Student.objects.filter(stop=stop)  # students who use this specific stop
+        Student.objects.filter(route_assignments__stop=stop)  # students who use this specific stop
         .select_related("guardian")
         .exclude(guardian=None)
     )
