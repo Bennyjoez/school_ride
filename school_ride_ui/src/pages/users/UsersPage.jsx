@@ -41,6 +41,7 @@ export default function UsersPage() {
   const { data: users, isLoading } = useQuery({
     queryKey: ["users"],
     queryFn: () => getUsers().then((r) => r.data),
+    invalidateOnWindowFocus: true,
   });
 
   // Client-side filtering
