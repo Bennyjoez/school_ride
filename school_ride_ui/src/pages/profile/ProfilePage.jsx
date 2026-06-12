@@ -93,14 +93,17 @@ export default function ProfilePage() {
           />
           <InfoRow label="School" value={user?.school_name} />
           <InfoRow label="Bio" value={user?.bio} />
-          <InfoRow
-            label="Last login"
-            value={
-              user?.last_login
-                ? format(new Date(user.last_login), "dd MMM yyyy, HH:mm")
-                : "Never"
+          {
+            user?.last_login && (
+              <InfoRow
+                label="Last login"
+                value={
+                  user?.last_login
+                    ? format(new Date(user.last_login), "dd MMM yyyy, HH:mm")
+                    : "Never"
             }
           />
+          )}
           <InfoRow
             label="Member since"
             value={
