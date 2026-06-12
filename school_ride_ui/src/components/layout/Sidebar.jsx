@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { logout, selectCurrentUser } from '../../store/authSlice'
 import { Badge } from '../ui'
 import { NotificationBell } from '../../pages/notifications/NotificationBell'
+import { useQueryClient } from '@tanstack/react-query'
 
 const ROLE_LABELS = {
   '1': { label: 'Admin',    color: 'purple' },
@@ -115,8 +116,10 @@ export function Sidebar() {
   const roleInfo  = ROLE_LABELS[user?.user_type] ?? { label: 'User', color: 'default' }
 
   const visibleNav = NAV_ITEMS.filter(item => item.roles.includes(user?.user_type))
+  const queryClient = useQueryClient()
 
   function handleLogout() {
+    queryClient.clear()
     dispatch(logout())
     navigate('/login', { replace: true })
   }
