@@ -20,7 +20,7 @@ class CheckInEventSerializer(serializers.ModelSerializer):
             'id', 'student', 'student_name', 'stop', 'stop_name',
             'event_type', 'recorded_by', 'recorded_by_name', 'occurred_at',
         ]
-        read_only_fields = ['id', 'occurred_at', 'student_name', 'stop_name', 'recorded_by_name', 'recorded_by']
+        read_only_fields = ['id', 'occurred_at', 'trip', 'student', 'student_name', 'stop_name', 'recorded_by_name', 'recorded_by']
  
  
 class TripSerializer(serializers.ModelSerializer):
@@ -29,17 +29,18 @@ class TripSerializer(serializers.ModelSerializer):
     vehicle_plate = serializers.CharField(source='vehicle.license_plate', read_only=True)
     pings_count = serializers.IntegerField(source='pings.count', read_only=True)
     stops = serializers.SerializerMethodField(source='route.stops', read_only=True)
+    checkin_events = CheckInEventSerializer(many=True, read_only=True)
  
     class Meta:
         model = Trip
         fields = [
             'id', 'route', 'route_name', 'vehicle', 'vehicle_plate',
             'driver', 'driver_name', 'trip_date', 'status',
-            'actual_start', 'actual_end', 'stops', 'pings_count', 'created_at',
+            'actual_start', 'actual_end', 'stops', 'checkin_events', 'pings_count', 'created_at',
         ]
         read_only_fields = [
             'id', 'status', 'actual_start', 'actual_end',
-            'route_name', 'driver_name', 'vehicle_plate', 'pings_count', 'created_at', 'stops'
+            'route_name', 'driver_name', 'vehicle_plate', 'pings_count', 'created_at', 'stops', 'checkin_events'
         ]
     
     def get_stops(self, obj):
@@ -53,6 +54,9 @@ class TripSerializer(serializers.ModelSerializer):
             }
             for stop in obj.route.stops.all().order_by('sequence').only('id', 'name', 'latitude', 'longitude', 'sequence')
         ]
+    
+    def get_checkin_events(self, obj):
+        return CheckInEventSerializer(obj.checkin_events.all().select_related('student', 'recorded_by'), many=True).data
  
     def validate(self, attrs):
         # Prevent duplicate route+date combinations at the serializer level
