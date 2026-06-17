@@ -1,4 +1,4 @@
-# apps/trips/views.py
+import logging
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.decorators import action
@@ -8,12 +8,15 @@ from rest_framework.viewsets import ModelViewSet
 
 from mixins import SchoolScopedMixin
 from apps.trips.models import Trip, GPSPing, CheckInEvent
+from apps.students.models import Student
 from apps.trips.serializers import (
     TripSerializer,
     GPSPingSerializer,
     CheckInEventSerializer,
 )
 from apps.users.permissions import IsAdminOrDirectorOrManager, IsDriverOfTrip
+
+logger = logging.getLogger(__name__)
 
 
 class TripViewSet(SchoolScopedMixin, ModelViewSet):
@@ -124,10 +127,40 @@ class TripViewSet(SchoolScopedMixin, ModelViewSet):
                 {'detail': 'Check-in events can only be recorded on active trips.'},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+        
+        student_code = request.data.get('student_code')
+        student = Student.objects.filter(student_code=student_code).first()
+        print(f"Student code received: {student_code}, Student found: {student}")  # Debugging line
+        if not student:
+            return Response(
+                {'detail': 'Student with this code does not exist.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        
+        # confirm the student is not actively on board already for this trip or another trip in the same time window
+        active_boardings = CheckInEvent.objects.filter(
+            student=student,
+            event_type=request.data.get('event_type'),
+            trip__status=Trip.Status.ACTIVE
+        )
+
+        print(f"Active boardings for student {student.full_name}: {active_boardings}")  # Debugging line
+
+        if active_boardings.exists():
+            if active_boardings.filter(trip=trip).exists():
+                return Response(
+                    {'detail': 'This student is already boarded for this trip.'},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            logger.error(f"Attempt to check in student {student.full_name}: {student.student_code} trip: {active_boardings.first().trip_id} who is already boarded on another active trip.")
+            return Response(
+                {'detail': 'This student is already on board for another trip.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         serializer = CheckInEventSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save(trip=trip, recorded_by=request.user)
+        serializer.save(trip=trip, student=student, recorded_by=request.user)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
