@@ -469,7 +469,7 @@ export default function TripDetailPage() {
             {trip.route_name}
           </h1>
           <p className="text-sm text-gray-400 mt-0.5">
-            {format(new Date(trip.trip_date), "EEEE, MMMM d, yyyy")}
+            {format(new Date(trip.trip_date), "EEEE, MMMM d, yyyy: h:mm a")}
           </p>
         </div>
         <Badge variant={cfg.color} size="lg">
