@@ -33,7 +33,7 @@ class Trip(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["route", "trip_date", "status", "vehicle"],
+                fields=["route", "trip_date", "status", "vehicle", "actual_end"],
                 name="unique_route_trip_date",
             )
         ]
