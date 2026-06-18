@@ -332,6 +332,11 @@ export default function TripDetailPage() {
   const startMutation = useMutation({
     mutationFn: () => startTrip(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["trip", id] }),
+    onError: (err) => {
+      if (err.response?.status === 400) {
+        queryClient.invalidateQueries({ queryKey: ["trip", id] });
+      }
+    },
   });
 
   const endMutation = useMutation({
@@ -340,6 +345,11 @@ export default function TripDetailPage() {
       stopGpsPingLoop();
       queryClient.invalidateQueries({ queryKey: ["trip", id] });
       queryClient.invalidateQueries({ queryKey: ["trip-pings", id] });
+    },
+    onError: (err) => {
+      if (err.response?.status === 400) {
+        queryClient.invalidateQueries({ queryKey: ["trip", id] });
+      }
     },
   });
 
