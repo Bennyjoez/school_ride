@@ -42,6 +42,7 @@ class TripSerializer(serializers.ModelSerializer):
             'id', 'status', 'actual_start', 'actual_end',
             'route_name', 'driver_name', 'vehicle_plate', 'pings_count', 'created_at', 'stops', 'checkin_events'
         ]
+        unique_together = ['route', 'trip_date', 'status', 'vehicle', 'actual_end']
     
     def get_stops(self, obj):
         return [
@@ -62,7 +63,7 @@ class TripSerializer(serializers.ModelSerializer):
         # Prevent duplicate route+date combinations at the serializer level
         route = attrs.get('route')
         trip_date = attrs.get('trip_date')
-        qs = Trip.objects.filter(route=route, trip_date=trip_date)
+        qs = Trip.objects.filter(route=route, trip_date=trip_date, status__in=['scheduled', 'active'])
         if self.instance:
             qs = qs.exclude(pk=self.instance.pk)
         if qs.exists():
