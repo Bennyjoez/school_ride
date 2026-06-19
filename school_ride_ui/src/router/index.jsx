@@ -2,7 +2,7 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 
 import { AppLayout } from "../components/layout/AppLayout";
-import { ProtectedRoute } from "../components/layout/ProtectedRoute";
+import { ProtectedRoute, RoleGuard } from "../components/layout/ProtectedRoute";
 
 import LoginPage from "../pages/auth/LoginPage";
 import DashboardPage from "../pages/dashboard/DashboardPage";
@@ -18,6 +18,11 @@ import NotFoundPage from "../pages/NotFoundPage";
 import LiveMapPage from "../pages/trips/Livemappage";
 import NotificationsPage from "../pages/notifications/NotificationPage";
 
+// Define role constants for cleaner code readability
+const ADMINS = ["1", "2", "3"]; 
+const STAFF = ["1", "2", "3", "4", "5"];
+const ALL_ROLES = ["1", "2", "3", "4", "5", "6"];
+
 export const router = createBrowserRouter([
   {
     path: "/login",
@@ -32,18 +37,84 @@ export const router = createBrowserRouter([
     ),
     children: [
       { index: true, element: <Navigate to="/dashboard" replace /> },
+      
+      // Shared Routes across all roles
       { path: "dashboard", element: <DashboardPage /> },
-      { path: "users", element: <UsersPage /> },
-      { path: "schools", element: <SchoolsPage /> },
-      { path: "vehicles", element: <VehiclesPage /> },
-      { path: "routes", element: <RoutesPage /> },
-      { path: "students", element: <StudentsPage /> },
-      { path: "trips", element: <TripsPage /> },
-      { path: "trips/:id", element: <TripDetailPage /> },
       { path: "profile", element: <ProfilePage /> },
-      { path: "trips/:id/map", element: <LiveMapPage /> }, // TODO: Add a button to link to the livemap page from the trip detail page and sidebar
-      { path: "notifications", element: <NotificationsPage /> },
-      { path: "*", element: <NotFoundPage /> },
-    ],
+      { path: "trips/:id/map", element: <LiveMapPage /> },
+
+      // Notifications (Everyone except Teachers and Drivers)
+      { 
+        path: "notifications", 
+        element: (
+          <RoleGuard allowedRoles={["1", "2", "3", "6"]} isRouteNavigation={true} >
+            <NotificationsPage />
+          </RoleGuard>
+        ) 
+      },
+
+      // Trip Management (Admins, School Directors, Managers, Teachers, Drivers)
+      { 
+        path: "trips", 
+        element: (
+          <RoleGuard allowedRoles={STAFF} isRouteNavigation={true} >
+            <TripsPage />
+          </RoleGuard>
+        ) 
+      },
+      { 
+        path: "trips/:id", 
+        element: (
+          <RoleGuard allowedRoles={STAFF} isRouteNavigation={true} >
+            <TripDetailPage />
+          </RoleGuard>
+        ) 
+      },
+
+      // Admin & Management Only Routes
+      { 
+        path: "users", 
+        element: (
+          <RoleGuard allowedRoles={ADMINS} isRouteNavigation={true} >
+            <UsersPage />
+          </RoleGuard>
+        ) 
+      },
+      { 
+        path: "schools", 
+        element: (
+          <RoleGuard allowedRoles={ADMINS} isRouteNavigation={true} >
+            <SchoolsPage />
+          </RoleGuard>
+        ) 
+      },
+      { 
+        path: "vehicles", 
+        element: (
+          <RoleGuard allowedRoles={ADMINS} isRouteNavigation={true} >
+            <VehiclesPage />
+          </RoleGuard>
+        ) 
+      },
+      { 
+        path: "routes", 
+        element: (
+          <RoleGuard allowedRoles={ADMINS} isRouteNavigation={true} >
+            <RoutesPage />
+          </RoleGuard>
+        ) 
+      },
+      { 
+        path: "students", 
+        element: (
+          <RoleGuard allowedRoles={ADMINS} isRouteNavigation={true} >
+            <StudentsPage />
+          </RoleGuard>
+        ) 
+      },
+
+      // Fallback 404
+      { path: "*", element: <NotFoundPage /> }
+    ]
   },
 ]);

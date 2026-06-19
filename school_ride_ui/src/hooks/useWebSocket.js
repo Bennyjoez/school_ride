@@ -23,7 +23,6 @@ export function useWebSocket(
 
   const disconnect = useCallback(() => {
     if (wsRef.current) {
-      console.log("[WS] Manually disconnecting");
       wsRef.current.close();
       wsRef.current = null;
     }
@@ -40,12 +39,10 @@ export function useWebSocket(
     wsRef.current = ws;
 
     ws.onopen = () => {
-      console.log(`[WS] Connected to trip ${tripId}`);
       onOpen?.();
     };
 
     ws.onmessage = (event) => {
-      console.log(`[WS] Received message for trip ${tripId}`);
       try {
         const msg = JSON.parse(event.data);
         if (msg.type === "gps_ping") onGpsPing?.(msg.data);
@@ -60,7 +57,6 @@ export function useWebSocket(
     };
 
     ws.onclose = (event) => {
-      console.log(`[WS] Closed - code ${event.code}`);
       onClose?.();
     };
 

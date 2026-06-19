@@ -5,6 +5,7 @@ import { logout, selectCurrentUser } from "../../store/authSlice";
 import { Badge } from "../ui";
 import { NotificationBell } from "../../pages/notifications/NotificationBell";
 import { useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 
 const ROLE_LABELS = {
   1: { label: "Admin", color: "purple" },
