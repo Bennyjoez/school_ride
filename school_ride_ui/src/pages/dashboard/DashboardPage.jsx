@@ -521,7 +521,7 @@ function GuardianDashboard({ user }) {
             {activeTrips.map((trip) => (
               <Link
                 key={trip.id}
-                to={`/trips/${trip.id}`}
+                to={`/trips/${trip.id}/map`}
                 className="text-xs font-medium text-blue-700 bg-blue-100 hover:bg-blue-200 px-3 py-1.5 rounded-full transition-colors"
               >
                 Track {trip.route_name} →
@@ -624,7 +624,7 @@ function GuardianDashboard({ user }) {
                 </p>
               </div>
               <Link
-                to={`/trips/${trip.id}`}
+                to={`/trips/${trip.id}/map`}
                 className="text-xs font-medium text-primary-600 bg-primary-50 hover:bg-primary-100 px-3 py-1.5 rounded-full transition-colors"
               >
                 Live map →
