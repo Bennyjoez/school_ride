@@ -1,4 +1,3 @@
-// src/pages/auth/LoginPage.jsx
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -11,7 +10,6 @@ export default function LoginPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || "/dashboard";
 
   const [apiError, setApiError] = useState(null);
 
@@ -26,7 +24,8 @@ export default function LoginPage() {
     try {
       const res = await login(data);
       dispatch(setCredentials(res.data));
-      navigate(from, { replace: true });
+      // everyone goes to dashboard after login,
+      navigate("/dashboard", { replace: true });
     } catch (err) {
       setApiError(err);
     }
