@@ -10,6 +10,7 @@ export function ProtectedRoute({ children }) {
   const user = useSelector(selectCurrentUser);
   const location = useLocation();
 
+  // If not logged in, redirect to login
   if (!user) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
@@ -26,9 +27,15 @@ export function ProtectedRoute({ children }) {
  *     <CreateUserButton />
  *   </RoleGuard>
  */
-export function RoleGuard({ allowedRoles, children, fallback = null }) {
+export function RoleGuard({ allowedRoles, children, isRouteNavigation = false, fallback = null }) {
   const user = useSelector(selectCurrentUser);
   if (!user) return fallback;
-  if (!allowedRoles.includes(user.user_type)) return fallback;
+  if (!allowedRoles.includes(user.user_type)){
+    if (isRouteNavigation) {
+      return <Navigate to="/dashboard" replace />;
+    } else {
+      return fallback;
+    }
+  }
   return children;
 }

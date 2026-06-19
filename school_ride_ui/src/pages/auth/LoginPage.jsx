@@ -10,6 +10,7 @@ export default function LoginPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const from = location.state?.from?.pathname || "/dashboard";
 
   const [apiError, setApiError] = useState(null);
 
@@ -24,8 +25,8 @@ export default function LoginPage() {
     try {
       const res = await login(data);
       dispatch(setCredentials(res.data));
-      // everyone goes to dashboard after login,
-      navigate("/dashboard", { replace: true });
+      // Navigate to the page the user was trying to access, or dashboard by default
+      navigate(from, { replace: true });
     } catch (err) {
       setApiError(err);
     }
