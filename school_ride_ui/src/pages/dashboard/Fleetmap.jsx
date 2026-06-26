@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import { format } from "date-fns";
 import { selectAccessToken } from "../../store/authSlice";
 import { getTrips } from "../../api/endpoints/resources";
+import { getWebSocketUrl } from "../../hooks/useWebSocket";
 
 
 //  SVG Bus icon factory
@@ -89,7 +90,7 @@ function useLiveFleet(activeTrips, accessToken, onPing) {
       if (socketsRef.current[trip.id]) return; // already connected
 
       const ws = new WebSocket(
-        `ws://127.0.0.1:8000/ws/trips/${trip.id}/track/?token=${accessToken}`,
+        getWebSocketUrl(trip.id, accessToken),
       );
 
       ws.onmessage = (event) => {
