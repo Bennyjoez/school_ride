@@ -2,7 +2,7 @@ name: Deploy UI to GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches: [stage, main]
     paths:
       - 'school_ride_ui/**'
 
