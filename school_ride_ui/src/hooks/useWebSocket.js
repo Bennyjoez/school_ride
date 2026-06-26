@@ -34,7 +34,7 @@ export function useWebSocket(
       return;
     }
 
-    const url = `ws://127.0.0.1:8000/ws/trips/${tripId}/track/?token=${accessToken}`;
+    const url = getWebSocketUrl(tripId, accessToken);
     const ws = new WebSocket(url);
     wsRef.current = ws;
 
@@ -67,3 +67,12 @@ export function useWebSocket(
 
   return { disconnect };
 }
+
+export const getWebSocketUrl = (tripId, accessToken) => {
+  if (!tripId || !accessToken) {
+    console.warn("[WS] Missing tripId or accessToken, cannot get URL");
+    return null;
+  }
+  const WS_BASE = import.meta.env.VITE_WS_URL
+  const url = `${WS_BASE}/ws/trips/${tripId}/track/?token=${accessToken}`
+};
