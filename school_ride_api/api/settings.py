@@ -80,13 +80,13 @@ MIDDLEWARE = [
 
 
 CORS_ALLOWED_ORIGINS = [
-    'https://bennyjoez.github.io/school_ride',
+    'https://bennyjoez.github.io',
 ]
 
 CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://bennyjoez.github.io/school_ride',
+    'https://bennyjoez.github.io',
 ]
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
