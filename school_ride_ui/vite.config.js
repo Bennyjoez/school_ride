@@ -2,9 +2,13 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 export default defineConfig({
+  base: '/school_ride/',
   plugins: [react()],
   server: {
-    base: 'school_ride', // Set the base URL for the stage and production server
+    proxy: {
+      '/api': 'http://127.0.0.1:8000',
+      '/ws': { target: 'ws://127.0.0.1:8000', ws: true },
+    },
   },
   resolve: {
     alias: {
