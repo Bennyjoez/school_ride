@@ -3,7 +3,7 @@ import { store } from "../store";
 import { setAccessToken, logout } from "../store/authSlice";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  baseURL: import.meta.env.VITE_API_URL || 'https://school-ride.onrender.com/api/',
   headers: {
     "Content-Type": "application/json",
   },
