@@ -16,7 +16,7 @@ from locust import LoadTestShape
 # Gradually increases load to find the breaking point.
 # Users climb by 10 every 30 seconds up to 200.
 # If your server starts dropping requests, the response time graph will
-# show a sharp elbow — that is your saturation point.
+# show a sharp elbow - that is your saturation point.
 #
 # Total duration: ~10 minutes
 
@@ -88,7 +88,7 @@ class SoakShape(LoadTestShape):
 
 
 # Scenario 3: Spike
-# Simulates a sudden burst of drivers all starting trips at the same time —
+# Simulates a sudden burst of drivers all starting trips at the same time -
 # e.g. school pick-up at 07:30 when 150 buses all depart within 2 minutes.
 # Checks whether Django + Channels + Celery can absorb a sudden load surge
 # and recover cleanly when it drops.

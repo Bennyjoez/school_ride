@@ -11,10 +11,10 @@
 #          --headless --host http://127.0.0.1:8000 \
 #          -u 50 -r 5 --run-time 2m
 #
-# Scenario flags — set via environment variables:
-#   SCENARIO=ramp    (default) gradual ramp — find the breaking point
-#   SCENARIO=soak    constant load — sustain X users for a duration
-#   SCENARIO=spike   sudden burst — hammer then drop
+# Scenario flags - set via environment variables:
+#   SCENARIO=ramp    (default) gradual ramp - find the breaking point
+#   SCENARIO=soak    constant load - sustain X users for a duration
+#   SCENARIO=spike   sudden burst - hammer then drop
 #
 #   DRIVER_EMAIL=driver@school.com
 #   DRIVER_PASSWORD=yourpassword
@@ -29,13 +29,13 @@ from locust.runners import MasterRunner, WorkerRunner
 
 log = logging.getLogger(__name__)
 
-# Config from environment 
+# Config from environment
 DRIVER_EMAIL = os.getenv("DRIVER_EMAIL", "driver1@gmail.com")
 DRIVER_PASSWORD = os.getenv("DRIVER_PASSWORD", "babanoma")
 TRIP_ID = os.getenv("TRIP_ID", "7")
 SCENARIO = os.getenv("SCENARIO", "soak")
 
-# Nairobi CBD area — pings will wander realistically
+# Nairobi CBD area - pings will wander realistically
 BASE_LAT = -1.2921
 BASE_LNG = 36.8219
 
@@ -77,7 +77,7 @@ class DriverUser(HttpUser):
                 self.token = data.get("access")
                 resp.success()
             else:
-                resp.failure(f"Login failed: {resp.status_code} — {resp.text}")
+                resp.failure(f"Login failed: {resp.status_code} - {resp.text}")
                 log.error("Login failed for %s: %s", DRIVER_EMAIL, resp.text)
 
     def _auth_headers(self):
@@ -85,7 +85,7 @@ class DriverUser(HttpUser):
 
     @task
     def post_gps_ping(self):
-        """POST /api/trips/{id}/ping/ — the endpoint under test."""
+        """POST /api/trips/{id}/ping/ - the endpoint under test."""
         if not self.token:
             self._login()
             return
@@ -114,11 +114,11 @@ class DriverUser(HttpUser):
             if resp.status_code == 201:
                 resp.success()
             elif resp.status_code == 401:
-                # Token expired mid-test — refresh and retry next tick
-                resp.failure("401 — token expired, re-logging in")
+                # Token expired mid-test - refresh and retry next tick
+                resp.failure("401 - token expired, re-logging in")
                 self._login()
             elif resp.status_code == 400:
-                # Trip not active — mark as failure but keep running
-                resp.failure(f"400 — {resp.text}")
+                # Trip not active - mark as failure but keep running
+                resp.failure(f"400 - {resp.text}")
             else:
-                resp.failure(f"Unexpected {resp.status_code} — {resp.text}")
+                resp.failure(f"Unexpected {resp.status_code} - {resp.text}")

@@ -212,10 +212,10 @@ export function TripsTable({ trips, loading }) {
                 {format(new Date(trip.trip_date), "dd MMM yyyy")}
               </td>
               <td className="px-4 py-3 text-sm font-mono text-gray-500">
-                {trip.vehicle_plate ?? "—"}
+                {trip.vehicle_plate ?? "-"}
               </td>
               <td className="px-4 py-3 text-sm text-gray-500">
-                {trip.driver_name ?? "—"}
+                {trip.driver_name ?? "-"}
               </td>
               <td className="px-4 py-3">
                 <TripStatusBadge status={trip.status} />
@@ -223,12 +223,12 @@ export function TripsTable({ trips, loading }) {
               <td className="px-4 py-3 text-sm text-gray-400 font-mono">
                 {trip.actual_start
                   ? format(new Date(trip.actual_start), "HH:mm")
-                  : "—"}
+                  : "-"}
               </td>
               <td className="px-4 py-3 text-sm text-gray-400 font-mono">
                 {trip.actual_end
                   ? format(new Date(trip.actual_end), "HH:mm")
-                  : "—"}
+                  : "-"}
               </td>
               <td className="px-4 py-3 text-sm text-gray-400">
                 {trip.pings_count ?? 0}
