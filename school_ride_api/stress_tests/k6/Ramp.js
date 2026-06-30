@@ -6,11 +6,11 @@
 //   sudo apt install k6       (Linux)
 //
 // Run:
-  // k6 run stress_tests/k6/ramp.js \
-  //    -e BASE_URL=http://127.0.0.1:8000 \
-  //    -e DRIVER_EMAIL=driver1@gmail.com \
-  //    -e DRIVER_PASSWORD=REDACTED_PASSWORD \
-  //    -e TRIP_ID=7
+// k6 run stress_tests/k6/ramp.js \
+//    -e BASE_URL=http://127.0.0.1:8000 \
+//    -e DRIVER_EMAIL=driver1@gmail.com \
+//    -e DRIVER_PASSWORD=REDACTED_PASSWORD \
+//    -e TRIP_ID=7
 //
 // Output: terminal summary + ramp.html report (open in browser)
 
@@ -113,7 +113,7 @@ export default function (data) {
   if (!ok) {
     pingErrorRate.add(1);
     if (res.status === 401) {
-      // Token expired — re-login next iteration
+      // Token expired - re-login next iteration
       _token = null;
     }
   } else {
