@@ -15,14 +15,14 @@ title = "SchoolFleet Gitleaks Config"
     "**/__tests__/**",
     "**/*.test.js",
     "**/*.spec.js",
-    # The default env template — contains only placeholders
+    # The default env template - contains only placeholders
     ".env.default",
     ".env.example",
   ]
 
 # Custom rules
 
-# Django SECRET_KEY — long random string assigned to SECRET_KEY
+# Django SECRET_KEY - long random string assigned to SECRET_KEY
 [[rules]]
   id          = "django-secret-key"
   description = "Django SECRET_KEY hardcoded in source"

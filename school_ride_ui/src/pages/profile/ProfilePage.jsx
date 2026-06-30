@@ -4,12 +4,17 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { format } from "date-fns";
 import { getMe } from "../../api/endpoints/users";
-import {
-  selectCurrentUser,
-} from "../../store/authSlice";
+import { selectCurrentUser } from "../../store/authSlice";
 import { Badge } from "../../components/ui";
 import { ROLE_LABELS, ROLE_BADGE_VARIANT } from "../../hooks/constants";
-import { Avatar, ChangePasswordForm, EditProfileForm, InfoRow, SectionCard, Tabs } from "./Components";
+import {
+  Avatar,
+  ChangePasswordForm,
+  EditProfileForm,
+  InfoRow,
+  SectionCard,
+  Tabs,
+} from "./Components";
 
 // Main page
 export default function ProfilePage() {
@@ -93,23 +98,22 @@ export default function ProfilePage() {
           />
           <InfoRow label="School" value={user?.school_name} />
           <InfoRow label="Bio" value={user?.bio} />
-          {
-            user?.last_login && (
-              <InfoRow
-                label="Last login"
-                value={
-                  user?.last_login
-                    ? format(new Date(user.last_login), "dd MMM yyyy, HH:mm")
-                    : "Never"
-            }
-          />
+          {user?.last_login && (
+            <InfoRow
+              label="Last login"
+              value={
+                user?.last_login
+                  ? format(new Date(user.last_login), "dd MMM yyyy, HH:mm")
+                  : "Never"
+              }
+            />
           )}
           <InfoRow
             label="Member since"
             value={
               user?.date_joined
                 ? format(new Date(user.date_joined), "dd MMM yyyy")
-                : "—"
+                : "-"
             }
           />
         </SectionCard>

@@ -381,7 +381,8 @@ export default function TripDetailPage() {
 
   const sendPing = useCallback(async () => {
     if (!pendingPos.current) return;
-    const { latitude, longitude, speed, heading, accuracy } = pendingPos.current;
+    const { latitude, longitude, speed, heading, accuracy } =
+      pendingPos.current;
     try {
       await postPing(id, {
         latitude,
@@ -393,7 +394,7 @@ export default function TripDetailPage() {
       setPingCount((c) => c + 1);
       setLastGps({ latitude, longitude, accuracy });
     } catch {
-      // Silently fail — WS broadcast still works even if HTTP ping fails
+      // Silently fail - WS broadcast still works even if HTTP ping fails
     }
   }, [id]);
 
@@ -419,9 +420,9 @@ export default function TripDetailPage() {
       { enableHighAccuracy: true, maximumAge: 3000 },
     );
 
-    // Send pings every 5 seconds  
+    // Send pings every 5 seconds
     // TODO: could make this more intelligent by sending a ping immediately on position change, then backing off to a regular interval after a successful ping
-    // TODO: handle the case where the driver temporarily loses GPS signal (e.g. goes through a tunnel) — maybe keep trying to send pings with the last known position, and mark them as "delayed" in the backend if they arrive much later than their recorded_at timestamp?
+    // TODO: handle the case where the driver temporarily loses GPS signal (e.g. goes through a tunnel) - maybe keep trying to send pings with the last known position, and mark them as "delayed" in the backend if they arrive much later than their recorded_at timestamp?
     // TODO: consider batching pings if the driver is moving very fast (e.g. on a highway) to avoid sending too many HTTP requests
 
     pingTimerRef.current = setInterval(sendPing, 5000);
@@ -490,19 +491,19 @@ export default function TripDetailPage() {
       {/*  Trip meta cards  */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
-          { label: "Vehicle", value: trip.vehicle_plate ?? "—" },
-          { label: "Driver", value: trip.driver_name ?? "—" },
+          { label: "Vehicle", value: trip.vehicle_plate ?? "-" },
+          { label: "Driver", value: trip.driver_name ?? "-" },
           {
             label: "Departed",
             value: trip.actual_start
               ? format(new Date(trip.actual_start), "HH:mm")
-              : "—",
+              : "-",
           },
           {
             label: "Arrived",
             value: trip.actual_end
               ? format(new Date(trip.actual_end), "HH:mm")
-              : "—",
+              : "-",
           },
         ].map(({ label, value }) => (
           <div
@@ -561,7 +562,7 @@ export default function TripDetailPage() {
 
       {/*  Two-column layout: map + ping history  */}
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-        {/* Live mini-map — 3/5 */}
+        {/* Live mini-map - 3/5 */}
         <div className="lg:col-span-3 space-y-2">
           <h2 className="text-sm font-semibold text-gray-700 flex items-center gap-2">
             Live Position
@@ -592,7 +593,7 @@ export default function TripDetailPage() {
           )}
         </div>
 
-        {/* Ping history — 2/5 */}
+        {/* Ping history - 2/5 */}
         <div className="lg:col-span-2 space-y-2">
           <h2 className="text-sm font-semibold text-gray-700">
             GPS Pings
@@ -727,7 +728,7 @@ export default function TripDetailPage() {
                       {evt.student_name}
                     </td>
                     <td className="px-5 py-3 text-gray-500">
-                      {evt.stop_name ?? "—"}
+                      {evt.stop_name ?? "-"}
                     </td>
                     <td className="px-5 py-3">
                       <Badge variant={EVENT_COLOR[evt.event_type]} size="sm">
@@ -738,7 +739,7 @@ export default function TripDetailPage() {
                       {format(new Date(evt.occurred_at), "HH:mm:ss")}
                     </td>
                     <td className="px-5 py-3 text-gray-400">
-                      {evt.recorded_by_name ?? "—"}
+                      {evt.recorded_by_name ?? "-"}
                     </td>
                   </tr>
                 ))}
