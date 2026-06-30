@@ -108,7 +108,7 @@ export function StudentFormModal({ open, onClose, student }) {
           <option value="">No guardian assigned</option>
           {guardians?.map((g) => (
             <option key={g.id} value={g.id}>
-              {g.name} — {g.phone_number}
+              {g.name} - {g.phone_number}
             </option>
           ))}
         </Select>
@@ -153,7 +153,9 @@ export function RouteAssignmentModal({ open, onClose, student }) {
   const watchedRoute = watch("route");
 
   // Stops for the selected route
-  const selectedRouteObj = routes?.find((r) => String(r.id) === String(watchedRoute));
+  const selectedRouteObj = routes?.find(
+    (r) => String(r.id) === String(watchedRoute),
+  );
   const stops = selectedRouteObj?.stops ?? [];
 
   useEffect(() => {
@@ -189,7 +191,7 @@ export function RouteAssignmentModal({ open, onClose, student }) {
     <Modal
       open={open}
       onClose={onClose}
-      title={`Routes — ${student?.full_name}`}
+      title={`Routes - ${student?.full_name}`}
       className="max-w-lg"
     >
       <div className="space-y-5">
