@@ -58,9 +58,9 @@ function Greeting({ user }) {
   );
 }
 
-// 
+//
 // ADMIN
-// 
+//
 function AdminDashboard({ user }) {
   const { data: schools, isLoading: ls } = useQuery({
     queryKey: ["schools"],
@@ -118,8 +118,7 @@ function AdminDashboard({ user }) {
         />
       </div>
 
-      <FleetMap height="380px"  />
-
+      <FleetMap height="380px" />
 
       {activeTrips.length > 0 && (
         <div className="mb-6 p-4 rounded-2xl bg-green-50 border border-green-200 flex items-center gap-3">
@@ -180,9 +179,9 @@ function AdminDashboard({ user }) {
   );
 }
 
-// 
+//
 // DIRECTOR / MANAGER
-// 
+//
 function DirectorDashboard({ user }) {
   const isManager = user?.user_type === "3";
   const { data: vehicles, isLoading: lv } = useQuery({
@@ -248,7 +247,7 @@ function DirectorDashboard({ user }) {
         />
       </div>
 
-      <FleetMap height="380px"  />
+      <FleetMap height="380px" />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
@@ -307,9 +306,9 @@ function DirectorDashboard({ user }) {
   );
 }
 
-// 
+//
 // TEACHER
-// 
+//
 function TeacherDashboard({ user }) {
   const { data: trips, isLoading } = useQuery({
     queryKey: ["trips"],
@@ -366,8 +365,8 @@ function TeacherDashboard({ user }) {
                   {trip.route_name}
                 </p>
                 <p className="text-xs text-gray-500 mt-0.5">
-                  Driver: {trip.driver_name ?? "—"} ·{" "}
-                  {trip.vehicle_plate ?? "—"}
+                  Driver: {trip.driver_name ?? "-"} ·{" "}
+                  {trip.vehicle_plate ?? "-"}
                 </p>
               </div>
               <div className="flex items-center gap-3">
@@ -389,9 +388,9 @@ function TeacherDashboard({ user }) {
   );
 }
 
-// 
+//
 // DRIVER
-// 
+//
 function DriverDashboard({ user }) {
   const { data: trips, isLoading } = useQuery({
     queryKey: ["trips"],
@@ -467,7 +466,7 @@ function DriverDashboard({ user }) {
                     <p className="text-xs text-gray-500 mt-1">
                       Vehicle:{" "}
                       <span className="font-mono">
-                        {trip.vehicle_plate ?? "—"}
+                        {trip.vehicle_plate ?? "-"}
                       </span>
                     </p>
                   </div>
@@ -476,7 +475,7 @@ function DriverDashboard({ user }) {
                 <p className="text-xs mt-3 font-medium text-primary-600">
                   {trip.status === "scheduled" && "Tap to start trip →"}
                   {trip.status === "active" &&
-                    "Trip in progress — tap to manage →"}
+                    "Trip in progress - tap to manage →"}
                   {trip.status === "completed" && (
                     <span className="text-gray-400">Completed</span>
                   )}
@@ -490,9 +489,9 @@ function DriverDashboard({ user }) {
   );
 }
 
-// 
+//
 // GUARDIAN
-// 
+//
 function GuardianDashboard({ user }) {
   const { data: students, isLoading: ls } = useQuery({
     queryKey: ["students"],
@@ -577,7 +576,7 @@ function GuardianDashboard({ user }) {
                       className="text-xs text-gray-500 flex items-center gap-1"
                     >
                       <span className="w-1.5 h-1.5 rounded-full bg-primary-400 shrink-0" />
-                      {a.route_name} — {a.stop_name} ({a.direction})
+                      {a.route_name} - {a.stop_name} ({a.direction})
                     </p>
                   ))}
                 </div>
@@ -637,9 +636,9 @@ function GuardianDashboard({ user }) {
   );
 }
 
-// 
+//
 // FALLBACK
-// 
+//
 function FallbackDashboard({ user }) {
   return (
     <div>

@@ -1,11 +1,11 @@
 #
 # Triggers on every push and pull request to main and develop.
 # Runs three jobs in parallel:
-#   1. frontend-lint — ESLint on school_ride_ui/
-#   2. secrets-scan — gitleaks scans entire repo for leaked credentials
-#   3. env-guard — confirms no .env files were committed
+#   1. frontend-lint - ESLint on school_ride_ui/
+#   2. secrets-scan - gitleaks scans entire repo for leaked credentials
+#   3. env-guard - confirms no .env files were committed
 
-name: CI — Lint & Security
+name: CI - Lint & Security
 
 on:
   push:
@@ -21,7 +21,7 @@ concurrency:
 jobs:
   # Job 1: ESLint (frontend)
   frontend-lint:
-    name: ESLint — school_ride_ui
+    name: ESLint - school_ride_ui
     runs-on: ubuntu-latest
 
     defaults:
@@ -49,7 +49,7 @@ jobs:
 
   # Job 2: Secrets scan (gitleaks)
   secrets-scan:
-    name: Secrets scan — gitleaks
+    name: Secrets scan - gitleaks
     runs-on: ubuntu-latest
 
     steps:
@@ -85,7 +85,7 @@ jobs:
       - name: Fail if any .env file was committed
         run: |
           # Search the entire repo for committed .env files.
-          # .env.default and .env.example are allowed — they contain only
+          # .env.default and .env.example are allowed - they contain only
           # placeholder values and serve as documentation.
           FOUND=$(git ls-files | grep -E '(^|/)\.env$' || true)
 

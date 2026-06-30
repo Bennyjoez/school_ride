@@ -76,7 +76,7 @@ export function SchoolFormModal({ open, onClose, school }) {
           {...register("region", { required: "Region is required" })}
         />
 
-        {/* Timezone — select from common options */}
+        {/* Timezone - select from common options */}
         <div className="flex flex-col gap-1">
           <label className="text-sm font-medium text-gray-700">Timezone</label>
           <select

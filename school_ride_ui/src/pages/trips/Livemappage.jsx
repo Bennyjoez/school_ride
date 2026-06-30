@@ -263,7 +263,7 @@ export default function LiveMapPage() {
       const etaHtml =
         eta != null
           ? `<span style="color:#6366f1;font-weight:600">${Number(eta).toFixed(1)} min</span>`
-          : "—";
+          : "-";
 
       L.marker(latlng, { icon })
         .bindPopup(
@@ -487,7 +487,7 @@ export default function LiveMapPage() {
                   ? formatDistanceToNow(new Date(livePos.recorded_at), {
                       addSuffix: true,
                     })
-                  : "—"}
+                  : "-"}
               </span>
             </div>
           )}
@@ -669,7 +669,7 @@ export default function LiveMapPage() {
                           {eta != null ? (
                             <EtaCountdown minutes={Number(eta)} />
                           ) : (
-                            <span className="text-xs text-gray-300">—</span>
+                            <span className="text-xs text-gray-300">-</span>
                           )}
                         </li>
                       );
@@ -815,7 +815,7 @@ export default function LiveMapPage() {
                     {eta != null ? (
                       <EtaCountdown minutes={Number(eta)} />
                     ) : (
-                      <span className="text-xs text-gray-300">—</span>
+                      <span className="text-xs text-gray-300">-</span>
                     )}
                   </li>
                 );
