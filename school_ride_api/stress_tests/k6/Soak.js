@@ -28,7 +28,7 @@ export const options = {
     { duration: "30s", target: 0 }, // drain
   ],
   thresholds: {
-    // During a soak, response time should stay flat — any upward trend
+    // During a soak, response time should stay flat - any upward trend
     // indicates a resource leak. p(99) threshold is looser than ramp.
     ping_duration_ms: ["p(95)<600", "p(99)<1000"],
     ping_error_rate: ["rate<0.005"],

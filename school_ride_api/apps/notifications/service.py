@@ -1,7 +1,7 @@
 """
 Notification creation helpers.
 
-The model tracks *delivery attempts* — one row per (recipient, channel).
+The model tracks *delivery attempts* - one row per (recipient, channel).
 Each helper creates the appropriate rows and then hands them to the
 channel-specific delivery backends (push / SMS / email).
 
@@ -174,7 +174,7 @@ def notify_trip_started(trip) -> None:
     )
 
     guardians = [s.guardian for s in students]
-    vehicle = getattr(trip.vehicle, "license_plate", "—")
+    vehicle = getattr(trip.vehicle, "license_plate", "-")
 
     _build_rows(
         guardians,
@@ -251,7 +251,9 @@ def notify_eta_update(trip, stop, eta_minutes: int) -> None:
     from apps.students.models import Student
 
     students = (
-        Student.objects.filter(route_assignments__stop=stop)  # students who use this specific stop
+        Student.objects.filter(
+            route_assignments__stop=stop
+        )  # students who use this specific stop
         .select_related("guardian")
         .exclude(guardian=None)
     )
