@@ -19,7 +19,7 @@ export const ROLE_BADGE_VARIANT = {
   6: "green", // Guardian
 };
 
-// For use in selects — excludes Admin option
+// For use in selects - excludes Admin option
 export const USER_TYPES = [
   { value: "2", label: "Director" },
   { value: "3", label: "Manager" },
@@ -28,7 +28,7 @@ export const USER_TYPES = [
   { value: "6", label: "Guardian" },
 ];
 
-// For Admin use — includes Admin option
+// For Admin use - includes Admin option
 export const ADMIN_USER_TYPES = [{ value: "1", label: "Admin" }, ...USER_TYPES];
 
 // Vehicle status labels and badge colours
@@ -96,10 +96,10 @@ export const VEHICLE_STATUS_OPTIONS = [
 ];
 
 export const DIRECTION_OPTIONS = [
-  { value: 'AM',   label: 'Morning (AM)'   },
-  { value: 'PM',   label: 'Afternoon (PM)' },
-  { value: 'BOTH', label: 'Both'           },
-]
+  { value: "AM", label: "Morning (AM)" },
+  { value: "PM", label: "Afternoon (PM)" },
+  { value: "BOTH", label: "Both" },
+];
 
 export const DIRECTION_BADGE = {
   AM: "blue",

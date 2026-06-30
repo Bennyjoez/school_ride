@@ -223,7 +223,7 @@ export function AssignDriverModal({ open, onClose, vehicle }) {
             <option value="">Unassign driver</option>
             {drivers.map((d) => (
               <option key={d.id} value={d.id}>
-                {d.name} — {d.phone_number}
+                {d.name} - {d.phone_number}
               </option>
             ))}
           </Select>
@@ -304,7 +304,7 @@ export function VehiclesTable({
                 </span>
               </td>
               <td className="px-4 py-3 text-sm text-gray-500">
-                {VEHICLE_TYPE_LABEL[v.vehicle_type] ?? "—"}
+                {VEHICLE_TYPE_LABEL[v.vehicle_type] ?? "-"}
               </td>
               <td className="px-4 py-3 text-sm text-gray-500">
                 {v.capacity} seats

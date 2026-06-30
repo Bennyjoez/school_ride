@@ -34,7 +34,7 @@ export function InfoRow({ label, value }) {
       <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide sm:w-36 shrink-0">
         {label}
       </span>
-      <span className="text-sm text-gray-700">{value ?? "—"}</span>
+      <span className="text-sm text-gray-700">{value ?? "-"}</span>
     </div>
   );
 }

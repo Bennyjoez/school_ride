@@ -160,7 +160,7 @@ export function RouteFormModal({ open, onClose, route }) {
           <option value="">No vehicle assigned</option>
           {vehicles?.map((v) => (
             <option key={v.id} value={v.id}>
-              {v.license_plate} —{" "}
+              {v.license_plate} -{" "}
               {v.vehicle_type === "1"
                 ? "Bus"
                 : v.vehicle_type === "2"
@@ -174,7 +174,7 @@ export function RouteFormModal({ open, onClose, route }) {
           <option value="">No driver assigned</option>
           {drivers?.map((d) => (
             <option key={d.id} value={d.id}>
-              {d.name} — {d.phone_number}
+              {d.name} - {d.phone_number}
             </option>
           ))}
         </Select>
@@ -520,7 +520,7 @@ export function RoutesTable({ routes, loading, onEdit, onDelete }) {
 
                 {/* Scheduled start */}
                 <td className="px-4 py-3 text-sm text-gray-500 font-mono">
-                  {route.scheduled_start ?? "—"}
+                  {route.scheduled_start ?? "-"}
                 </td>
 
                 {/* Vehicle */}
