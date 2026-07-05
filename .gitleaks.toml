@@ -12,10 +12,10 @@ title = "SchoolFleet Gitleaks Config"
     "package-lock.json",
     "yarn.lock",
     # Test fixtures with known-fake credentials
-    "**/__tests__/**",
-    "**/*.test.js",
-    "**/*.spec.js",
-    # The default env template - contains only placeholders
+    ".*/__tests__/.*",
+    ".*\\.test\\.js$",
+    ".*\\.spec\\.js$",
+    # The default env template — contains only placeholders
     ".env.default",
     ".env.example",
   ]
