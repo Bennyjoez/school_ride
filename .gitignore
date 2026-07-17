@@ -80,5 +80,5 @@ celerybeat-schedule.dir
 celerybeat-schedule.bak
 celerybeat-schedule.dat
 
-*.html
-*.csv
+*/reports/*.html
+*/reports/*.csv
