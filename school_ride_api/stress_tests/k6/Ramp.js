@@ -48,9 +48,14 @@ export const options = {
 
 // Helpers
 const BASE_URL = __ENV.BASE_URL || "http://127.0.0.1:8000";
-const EMAIL = __ENV.DRIVER_EMAIL || "ENV['DRIVER_EMAIL']";
-const PASSWORD = __ENV.DRIVER_PASSWORD || "ENV[`PASS']";
 const TRIP_ID = __ENV.TRIP_ID || "7";
+const EMAIL = __ENV.DRIVER_EMAIL;
+const PASSWORD = __ENV.DRIVER_PASSWORD;
+
+// Fail early if secrets are missing so the script doesn't send blank requests
+if (!EMAIL || !PASSWORD) {
+  throw new Error("❌ Security Halt: DRIVER_EMAIL and DRIVER_PASSWORD environment variables must be provided.");
+}
 
 function login() {
   const res = http.post(
