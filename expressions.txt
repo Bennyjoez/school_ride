@@ -1,2 +1,0 @@
-drive1@gmail.com==>driver@test.com
-ENV[`PASS']==>REDACTED_PASSWORD
