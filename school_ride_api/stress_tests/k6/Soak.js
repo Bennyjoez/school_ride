@@ -6,9 +6,9 @@
 //
 // Run:
 //   k6 run stress_tests/k6/soak.js \
-//      -e BASE_URL=http://127.0.0.1:8000 \
-//      -e DRIVER_EMAIL=ENV['DRIVER_EMAIL'] \
-//      -e DRIVER_PASSWORD=REDACTED_PASSWORD \
+//      -e BASE_URL \
+//      -e DRIVER_EMAIL \
+//      -e DRIVER_PASSWORD \
 //      -e TRIP_ID=7
 
 import http from "k6/http";
