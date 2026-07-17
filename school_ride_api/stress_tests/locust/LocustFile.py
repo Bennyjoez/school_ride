@@ -16,8 +16,8 @@
 #   SCENARIO=soak    constant load - sustain X users for a duration
 #   SCENARIO=spike   sudden burst - hammer then drop
 #
-#   DRIVER_EMAIL=test@example.com
-#   DRIVER_PASSWORD=ENV['PASS']
+#   DRIVER_EMAIL
+#   DRIVER_PASSWORD
 #   TRIP_ID=1   (an active trip the driver owns)
 
 import os
