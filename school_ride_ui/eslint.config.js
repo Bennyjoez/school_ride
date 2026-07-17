@@ -4,16 +4,7 @@ import reactPlugin from "eslint-plugin-react";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
 import noSecrets from "eslint-plugin-no-secrets";
-import { FlatCompat } from "@eslint/compat";
-import path from "path";
-import { fileURLToPath } from "url";
-
-// Emulate __dirname for ES modules to feed into FlatCompat
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
+import { fixupPluginRules } from "@eslint/compat"; // Correct import
 
 export default [
   // Files to ignore
@@ -30,15 +21,6 @@ export default [
   // Base JS rules
   js.configs.recommended,
 
-  // Safely translate and inject legacy configurations into ESLint v9 format
-  ...compat.config({
-    plugins: ["react", "react-hooks"],
-    extends: [
-      "plugin:react/recommended",
-      "plugin:react-hooks/recommended",
-    ],
-  }),
-
   // React + hooks + secrets adjustments
   {
     files: ["**/*.{js,jsx}"],
@@ -54,8 +36,9 @@ export default [
       },
     },
     plugins: {
-      react: reactPlugin,
-      "react-hooks": reactHooks,
+      // Wrap legacy plugins with fixupPluginRules to make them ESLint v10-safe
+      react: fixupPluginRules(reactPlugin),
+      "react-hooks": fixupPluginRules(reactHooks),
       "react-refresh": reactRefresh,
       "no-secrets": noSecrets,
     },
@@ -63,30 +46,28 @@ export default [
       react: { version: "detect" },
     },
     rules: {
+      // Now safe to load because the underlying rules have been dynamically patched
+      ...reactPlugin.configs.recommended.rules,
+      ...reactHooks.configs.recommended.rules,
+      
       "react-refresh/only-export-components": [
         "warn",
         { allowConstantExport: true },
       ],
-      "react/prop-types": "off", // Using TypeScript or JSDoc instead
-      "react/react-in-jsx-scope": "off", // Not needed in React 17+
+      "react/prop-types": "off", 
+      "react/react-in-jsx-scope": "off", 
 
       // Secrets / credentials detection
-      // Catches hardcoded API keys, tokens, passwords, private keys accidentally
-      // committed into source files.
       "no-secrets/no-secrets": [
         "error",
         {
-          tolerance: 4.2, // Entropy threshold - lower = stricter
+          tolerance: 4.2, 
           additionalRegexes: {
-            // Catch any variable that looks like it holds a token or key
             "Hardcoded token assignment":
               /(?:token|secret|password|api_?key|auth|credential)\s*[:=]\s*["'][A-Za-z0-9+/=_\-]{8,}/i,
-            // Django SECRET_KEY pattern
             "Django secret key": /SECRET_KEY\s*=\s*["'][^"']{20,}/,
-            // JWT patterns
             "JWT token value":
               /eyJ[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_]+/,
-            // Firebase / FCM
             "FCM server key": /AAAA[A-Za-z0-9_\-]{7}:[A-Za-z0-9_\-]{140}/,
           },
         },
