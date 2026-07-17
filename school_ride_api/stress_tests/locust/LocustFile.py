@@ -30,9 +30,9 @@ from locust.runners import MasterRunner, WorkerRunner
 log = logging.getLogger(__name__)
 
 # Config from environment
-DRIVER_EMAIL = os.getenv("DRIVER_EMAIL", "driver1@gmail.com")
-DRIVER_PASSWORD = os.getenv("DRIVER_PASSWORD", "babanoma")
-TRIP_ID = os.getenv("TRIP_ID", "7")
+DRIVER_EMAIL = os.getenv("DRIVER_EMAIL")
+DRIVER_PASSWORD = os.getenv("DRIVER_PASSWORD")
+TRIP_ID = os.getenv("TRIP_ID")
 SCENARIO = os.getenv("SCENARIO", "soak")
 
 # Nairobi CBD area - pings will wander realistically
