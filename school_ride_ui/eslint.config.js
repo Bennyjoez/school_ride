@@ -64,11 +64,11 @@ export default [
           tolerance: 4.2, 
           additionalRegexes: {
             "Hardcoded token assignment":
-              /(?:token|secret|password|api_?key|auth|credential)\s*[:=]\s*["'][A-Za-z0-9+/=_\-]{8,}/i,
+              /(?:token|secret|password|api_?key|auth|credential)\s*[:=]\s*["'][A-Za-z0-9+/=_]{8,}/i,
             "Django secret key": /SECRET_KEY\s*=\s*["'][^"']{20,}/,
             "JWT token value":
               /eyJ[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_]+/,
-            "FCM server key": /AAAA[A-Za-z0-9_\-]{7}:[A-Za-z0-9_\-]{140}/,
+            "FCM server key": /AAAA[A-Za-z0-9_]{7}:[A-Za-z0-9_]{140}/,
           },
         },
       ],
