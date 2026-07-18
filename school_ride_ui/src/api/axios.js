@@ -3,7 +3,8 @@ import { store } from "../store";
 import { setAccessToken, logout } from "../store/authSlice";
 
 const api = axios.create({
-  baseURL: "/api/", // proxied to http://127.0.0.1:8000 by Vite
+  baseURL:
+    import.meta.env.VITE_API_URL || "https://school-ride.onrender.com/api/",
   headers: {
     "Content-Type": "application/json",
   },
@@ -46,7 +47,7 @@ api.interceptors.response.use(
       }
     }
 
-    // Build a clean error message — avoid duplicating the detail field
+    // Build a clean error message - avoid duplicating the detail field
     const res = error?.response?.data || {};
     const parts = Object.entries(res)
       .filter(([key]) => key !== "detail")
@@ -54,7 +55,7 @@ api.interceptors.response.use(
         ([key, val]) => `${key}: ${Array.isArray(val) ? val.join(" ") : val}`,
       );
     const base = res.detail || error.message || "An unknown error occurred";
-    const message = parts.length ? `${base} — ${parts.join(" ")}` : base;
+    const message = parts.length ? `${base} - ${parts.join(" ")}` : base;
 
     return Promise.reject({ message });
   },

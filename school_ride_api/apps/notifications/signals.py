@@ -3,7 +3,7 @@ Signal receivers that fire notification creation when:
   - A Trip transitions to ACTIVE or COMPLETED
   - A CheckInEvent is created (board or alight)
 
-Connected in NotificationsConfig.ready() — see apps.py.
+Connected in NotificationsConfig.ready() - see apps.py.
 All exceptions are caught here so a notification failure never
 breaks the triggering view action.
 """
@@ -29,7 +29,7 @@ def on_trip_save(sender, instance: Trip, created: bool, update_fields=None, **kw
     """
     fields = update_fields or []
     if update_fields is not None and "status" not in fields:
-        return  # status wasn't touched — nothing to do
+        return  # status wasn't touched - nothing to do
 
     try:
         if instance.status == Trip.Status.ACTIVE:
@@ -54,7 +54,7 @@ def on_trip_save(sender, instance: Trip, created: bool, update_fields=None, **kw
 def on_checkin_event_save(sender, instance: CheckInEvent, created: bool, **kwargs):
     """
     Fire student_boarded / student_alighted on every new CheckInEvent.
-    Updates are ignored — check-in events are immutable once created.
+    Updates are ignored - check-in events are immutable once created.
     """
     if not created:
         return

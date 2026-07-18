@@ -7,8 +7,8 @@ GET  /notifications/?event_type=student_boarded  Filter by event type
 GET  /notifications/{id}/            Single notification
 GET  /notifications/unread_count/    Fast unread badge count (pending rows)
 
-No create / delete exposed — notifications are system-generated only.
-No update endpoint — delivery status is managed internally by the service.
+No create / delete exposed - notifications are system-generated only.
+No update endpoint - delivery status is managed internally by the service.
 """
 
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
@@ -23,7 +23,7 @@ from apps.notifications.serializers import NotificationSerializer
 
 class NotificationViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     """
-    Read-only viewset — delivery status is managed by the service layer,
+    Read-only viewset - delivery status is managed by the service layer,
     not by the client.
 
     Query params accepted on list:
@@ -62,7 +62,7 @@ class NotificationViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
 
     # ------------------------------------------------------------------
     # GET /notifications/unread_count/
-    # "Unread" here means status=PENDING — not yet delivered to the device.
+    # "Unread" here means status=PENDING - not yet delivered to the device.
     # For in-app feed purposes this is the number the badge should show.
     # ------------------------------------------------------------------
     @action(detail=False, methods=["get"], url_path="unread_count")

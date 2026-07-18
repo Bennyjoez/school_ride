@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 import { format } from "date-fns";
 import { selectAccessToken } from "../../store/authSlice";
 import { getTrips } from "../../api/endpoints/resources";
-
+import { getWebSocketUrl } from "../../hooks/useWebSocket";
 
 //  SVG Bus icon factory
 // Returns a Leaflet DivIcon with an SVG bus marker rotated to the vehicle heading
@@ -88,9 +88,7 @@ function useLiveFleet(activeTrips, accessToken, onPing) {
     activeTrips.forEach((trip) => {
       if (socketsRef.current[trip.id]) return; // already connected
 
-      const ws = new WebSocket(
-        `ws://127.0.0.1:8000/ws/trips/${trip.id}/track/?token=${accessToken}`,
-      );
+      const ws = new WebSocket(getWebSocketUrl(trip.id, accessToken));
 
       ws.onmessage = (event) => {
         try {
@@ -134,7 +132,7 @@ export function FleetMap({
   const leafletRef = useRef(null); // Leaflet map instance
   const markersRef = useRef({}); // { tripId: { marker, polyline, stops[] } }
 
-  // Vehicle positions keyed by tripId — updated by WS pings
+  // Vehicle positions keyed by tripId - updated by WS pings
   const [positions, setPositions] = useState({});
   // Selected trip id for info panel
   const [selected, setSelected] = useState(null);
@@ -148,10 +146,16 @@ export function FleetMap({
     refetchInterval: 60_000,
   });
 
-  const activeTrips = useMemo(() => trips?.filter((t) => t.status === "active") ?? [], [trips]);
-  const scheduledTrips = useMemo(() => trips?.filter((t) => t.status === "scheduled") ?? [], [trips]);
+  const activeTrips = useMemo(
+    () => trips?.filter((t) => t.status === "active") ?? [],
+    [trips],
+  );
+  const scheduledTrips = useMemo(
+    () => trips?.filter((t) => t.status === "scheduled") ?? [],
+    [trips],
+  );
 
-  // Handle incoming GPS ping — update positions state
+  // Handle incoming GPS ping - update positions state
   const handlePing = useCallback((tripId, routeName, data) => {
     setPositions((prev) => ({
       ...prev,
@@ -233,7 +237,7 @@ export function FleetMap({
     // Draw stop markers for trips whose routes have stops
     trips?.forEach((trip) => {
       if (!trip.stops && !markersRef.current[`stops-${trip.id}`]) {
-        // Stops are nested on the route — draw from route.stops if available
+        // Stops are nested on the route - draw from route.stops if available
       }
     });
   }, [positions, activeTrips, trips]);
@@ -377,7 +381,7 @@ export function FleetMap({
             <span className="text-gray-300">
               {selectedPos.updatedAt
                 ? format(selectedPos.updatedAt, "HH:mm:ss")
-                : "—"}
+                : "-"}
             </span>
           </div>
           <button
