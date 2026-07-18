@@ -1,5 +1,5 @@
 // src/router/index.jsx
-import { createBrowserRouter, Navigate } from "react-router-dom";
+import { createHashRouter, Navigate } from "react-router-dom";
 
 import { AppLayout } from "../components/layout/AppLayout";
 import { ProtectedRoute, RoleGuard } from "../components/layout/ProtectedRoute";
@@ -21,9 +21,8 @@ import NotificationsPage from "../pages/notifications/NotificationPage";
 // Define role constants for cleaner code readability
 const ADMINS = ["1", "2", "3"]; 
 const STAFF = ["1", "2", "3", "4", "5"];
-const ALL_ROLES = ["1", "2", "3", "4", "5", "6"];
 
-export const router = createBrowserRouter([
+export const router = createHashRouter([
   {
     path: "/login",
     element: <LoginPage />,

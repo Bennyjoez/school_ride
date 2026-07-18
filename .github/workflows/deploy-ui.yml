@@ -1,0 +1,37 @@
+name: Deploy UI to GitHub Pages
+
+on:
+  push:
+    branches: [stage]
+    paths:
+      - 'school_ride_ui/**'
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.19.4'
+
+      - name: Install dependencies
+        working-directory: school_ride_ui
+        run: npm install --legacy-peer-deps
+
+      - name: Build
+        working-directory: school_ride_ui
+        env:
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+          VITE_WS_URL: ${{ secrets.VITE_WS_URL }}
+        run: npm run build
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: school_ride_ui/dist

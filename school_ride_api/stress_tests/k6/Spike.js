@@ -1,14 +1,14 @@
 // stress_tests/k6/spike.js
 //
-// Sudden burst then drop — simulates all school buses departing at once
+// Sudden burst then drop - simulates all school buses departing at once
 // during morning pick-up (e.g. 150 drivers all start trips within 2 minutes).
 // Checks whether the system can absorb a sudden surge and recover cleanly.
 //
 // Run:
 //   k6 run stress_tests/k6/spike.js \
-//      -e BASE_URL=http://127.0.0.1:8000 \
-//      -e DRIVER_EMAIL=driver1@gmail.com \
-//      -e DRIVER_PASSWORD=babanoma \
+//      -e BASE_URL \
+//      -e DRIVER_EMAIL\
+//      -e DRIVER_PASSWORD\
 //      -e TRIP_ID=1
 
 import http from "k6/http";
@@ -23,14 +23,14 @@ const pingCount = new Counter("ping_total");
 
 export const options = {
   stages: [
-    { duration: "30s", target: 10 }, // baseline — normal morning traffic
-    { duration: "30s", target: 200 }, // spike    — all buses depart at once
-    { duration: "1m", target: 200 }, // sustain  — peak load held briefly
-    { duration: "30s", target: 10 }, // recover  — most buses are en-route, pings slow
+    { duration: "30s", target: 10 }, // baseline - normal morning traffic
+    { duration: "30s", target: 200 }, // spike    - all buses depart at once
+    { duration: "1m", target: 200 }, // sustain  - peak load held briefly
+    { duration: "30s", target: 10 }, // recover  - most buses are en-route, pings slow
     { duration: "30s", target: 0 }, // drain
   ],
   thresholds: {
-    // During the spike, allow higher latency — we care that it recovers,
+    // During the spike, allow higher latency - we care that it recovers,
     // not that it's fast at 200 users
     ping_duration_ms: ["p(95)<1000"],
     // Error rate must stay under 2% even during the spike
@@ -40,9 +40,14 @@ export const options = {
 };
 
 const BASE_URL = __ENV.BASE_URL || "http://127.0.0.1:8000";
-const EMAIL = __ENV.DRIVER_EMAIL || "driver1@gmail.com";
-const PASSWORD = __ENV.DRIVER_PASSWORD || "babanoma";
 const TRIP_ID = __ENV.TRIP_ID || "7";
+const EMAIL = __ENV.DRIVER_EMAIL;
+const PASSWORD = __ENV.DRIVER_PASSWORD;
+
+// Fail early if secrets are missing so the script doesn't send blank requests
+if (!EMAIL || !PASSWORD) {
+  throw new Error("❌ Security Halt: DRIVER_EMAIL and DRIVER_PASSWORD environment variables must be provided.");
+}
 
 function login() {
   const res = http.post(
@@ -96,7 +101,7 @@ export default function () {
     pingErrorRate.add(0);
   }
 
-  // During a spike drivers are more frantic — shorter sleep
+  // During a spike drivers are more frantic - shorter sleep
   sleep(2 + Math.random() * 3);
 }
 

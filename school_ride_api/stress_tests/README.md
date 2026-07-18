@@ -1,10 +1,10 @@
-# SchoolFleet — Ping Endpoint Stress Tests
+# SchoolFleet - Ping Endpoint Stress Tests
 
 Tests target: `POST /api/trips/{id}/ping/`
 
 All tests authenticate as a Driver, obtain a JWT, and hammer the GPS ping
-endpoint with realistic payloads — wandering coordinates, random speed and
-heading — at a realistic 3–7 second cadence between pings.
+endpoint with realistic payloads - wandering coordinates, random speed and
+heading - at a realistic 3–7 second cadence between pings.
 
 ---
 
@@ -16,9 +16,9 @@ stress_tests/
 │   ├── locustfile.py     # Locust user class + tasks
 │   └── scenarios.py      # RampShape, SoakShape, SpikeShape
 └── k6/
-    ├── ramp.js           # Gradual ramp — find the breaking point
-    ├── soak.js           # Constant load — catch leaks and degradation
-    ├── spike.js          # Sudden burst — simulate morning school rush
+    ├── ramp.js           # Gradual ramp - find the breaking point
+    ├── soak.js           # Constant load - catch leaks and degradation
+    ├── spike.js          # Sudden burst - simulate morning school rush
     └── reports/          # HTML reports written here after each run
 ```
 
@@ -28,7 +28,7 @@ stress_tests/
 
 ### Locust
 ```bash
-# Ubuntu 24.04 — install build dependencies first
+# Ubuntu 24.04 - install build dependencies first
 # Python 3.12 (shipped with Ubuntu 24.04) needs these to compile some locust deps
 sudo apt install -y python3-dev gcc
 
@@ -82,7 +82,7 @@ k6 version
 4. **An active trip must exist** that the Driver owns.
    - Create a trip via the API or admin panel
    - Start it: `POST /api/trips/{id}/start/`
-   - Note the trip `id` — you'll pass it as `TRIP_ID`
+   - Note the trip `id` - you'll pass it as `TRIP_ID`
 
 5. **Create the reports directory** (k6 writes HTML reports here):
    ```bash
@@ -118,8 +118,8 @@ Hit **Start swarming** and watch the real-time charts.
 Set your credentials and trip ID via environment variables:
 
 ```bash
-export DRIVER_EMAIL=driver@school.com
-export DRIVER_PASSWORD=changeme
+export DRIVER_EMAIL=test@example.com
+export DRIVER_PASSWORD=REDACTED_PASS
 export TRIP_ID=1
 ```
 
@@ -168,22 +168,22 @@ Pass credentials and trip ID as `-e` flags:
 # Ramp
 k6 run stress_tests/k6/ramp.js \
    -e BASE_URL=http://127.0.0.1:8000 \
-   -e DRIVER_EMAIL=driver@school.com \
-   -e DRIVER_PASSWORD=changeme \
+   -e DRIVER_EMAIL=test@example.com \
+   -e DRIVER_PASSWORD=REDACTED_PASS \
    -e TRIP_ID=1
 
 # Soak
 k6 run stress_tests/k6/soak.js \
    -e BASE_URL=http://127.0.0.1:8000 \
-   -e DRIVER_EMAIL=driver@school.com \
-   -e DRIVER_PASSWORD=changeme \
+   -e DRIVER_EMAIL=test@example.com \
+   -e DRIVER_PASSWORD=REDACTED_PASS \
    -e TRIP_ID=1
 
 # Spike
 k6 run stress_tests/k6/spike.js \
    -e BASE_URL=http://127.0.0.1:8000 \
-   -e DRIVER_EMAIL=driver@school.com \
-   -e DRIVER_PASSWORD=changeme \
+   -e DRIVER_EMAIL=test@example.com \
+   -e DRIVER_PASSWORD=REDACTED_PASS \
    -e TRIP_ID=1
 ```
 
@@ -206,12 +206,12 @@ open stress_tests/k6/reports/ramp_report.html
 
 ---
 
-## Thresholds — what pass/fail means
+## Thresholds - what pass/fail means
 
 | Metric | Ramp | Soak | Spike |
 |---|---|---|---|
 | p(95) response time | < 500 ms | < 600 ms | < 1000 ms |
-| p(99) response time | — | < 1000 ms | — |
+| p(99) response time | - | < 1000 ms | - |
 | Error rate | < 1% | < 0.5% | < 2% |
 
 k6 will print `✓` or `✗` next to each threshold at the end of a run.
@@ -223,36 +223,36 @@ Locust shows a red failure count in the UI and CSV.
 
 ### Key numbers to look at
 
-**Requests/second (RPS)** — how many pings the server handled per second.
+**Requests/second (RPS)** - how many pings the server handled per second.
 The ping endpoint writes a `GPSPing` row, broadcasts via Channels, and
 triggers a Celery notification task. A realistic target for a single Django
 worker is 50–150 RPS. If RPS plateaus while users keep climbing, you've
 hit the ceiling.
 
-**p(95) response time** — 95% of requests completed in under this time.
+**p(95) response time** - 95% of requests completed in under this time.
 Under 200 ms is excellent. 200–500 ms is acceptable. Over 500 ms under
 moderate load suggests a bottleneck (DB, Celery queue, Redis).
 
-**Error rate** — anything above 1% under moderate load needs investigation.
+**Error rate** - anything above 1% under moderate load needs investigation.
 Common causes:
-- `400` — trip is not active (check `TRIP_ID` is for a running trip)
-- `401` — JWT expired; the scripts handle this by re-logging in
-- `500` — Django exception, check `manage.py runserver` output
-- Connection refused — Django crashed, check for OOM or DB pool exhaustion
+- `400` - trip is not active (check `TRIP_ID` is for a running trip)
+- `401` - JWT expired; the scripts handle this by re-logging in
+- `500` - Django exception, check `manage.py runserver` output
+- Connection refused - Django crashed, check for OOM or DB pool exhaustion
 
-### Ramp — look for the elbow
+### Ramp - look for the elbow
 Plot RPS vs users. RPS climbs linearly, then flattens. The point where it
 stops climbing is your saturation point. Response time will spike upward
 at the same user count. That number tells you how many concurrent drivers
 your current setup can handle.
 
-### Soak — look for drift
+### Soak - look for drift
 Response time should stay flat for the full 10 minutes. If p(95) climbs
 from 150 ms to 600 ms over 10 minutes with constant user count, you have
-a resource leak — likely DB connections, Redis connections, or unclosed
+a resource leak - likely DB connections, Redis connections, or unclosed
 file handles.
 
-### Spike — look for recovery time
+### Spike - look for recovery time
 After the spike drops back to baseline (10 users), response time should
 return to pre-spike levels within 30–60 seconds. If it takes longer, or
 never recovers without a server restart, you have a queuing or connection
@@ -275,7 +275,7 @@ The access token has expired and re-login is failing. Check that
 
 **Very low RPS (< 10) even at low user counts**
 Celery is probably not running. The ping view broadcasts to Channels and
-creates a notification — if Celery is backed up, DB transactions queue up.
+creates a notification - if Celery is backed up, DB transactions queue up.
 Start the Celery worker before testing:
 ```bash
 cd school_ride_api && celery -A api worker -l info

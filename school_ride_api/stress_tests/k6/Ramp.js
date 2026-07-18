@@ -6,11 +6,11 @@
 //   sudo apt install k6       (Linux)
 //
 // Run:
-  // k6 run stress_tests/k6/ramp.js \
-  //    -e BASE_URL=http://127.0.0.1:8000 \
-  //    -e DRIVER_EMAIL=driver1@gmail.com \
-  //    -e DRIVER_PASSWORD=babanoma \
-  //    -e TRIP_ID=7
+// k6 run stress_tests/k6/ramp.js \
+//    -e BASE_URL \
+//    -e DRIVER_EMAIL \
+//    -e DRIVER_PASSWORD \
+//    -e TRIP_ID
 //
 // Output: terminal summary + ramp.html report (open in browser)
 
@@ -48,9 +48,14 @@ export const options = {
 
 // Helpers
 const BASE_URL = __ENV.BASE_URL || "http://127.0.0.1:8000";
-const EMAIL = __ENV.DRIVER_EMAIL || "driver1@gmail.com";
-const PASSWORD = __ENV.DRIVER_PASSWORD || "babanoma";
 const TRIP_ID = __ENV.TRIP_ID || "7";
+const EMAIL = __ENV.DRIVER_EMAIL;
+const PASSWORD = __ENV.DRIVER_PASSWORD;
+
+// Fail early if secrets are missing so the script doesn't send blank requests
+if (!EMAIL || !PASSWORD) {
+  throw new Error("❌ Security Halt: DRIVER_EMAIL and DRIVER_PASSWORD environment variables must be provided.");
+}
 
 function login() {
   const res = http.post(
@@ -113,7 +118,7 @@ export default function (data) {
   if (!ok) {
     pingErrorRate.add(1);
     if (res.status === 401) {
-      // Token expired — re-login next iteration
+      // Token expired - re-login next iteration
       _token = null;
     }
   } else {

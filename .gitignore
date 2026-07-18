@@ -32,7 +32,7 @@ school_ride_ui/.eslintcache
 .env.local
 .env.production
 .env.staging
-# … except placeholder templates (safe to commit — contain no real values)
+# … except placeholder templates (safe to commit - contain no real values)
 !.env.default
 !.env.example
 
@@ -79,3 +79,6 @@ celerybeat-schedule.db
 celerybeat-schedule.dir
 celerybeat-schedule.bak
 celerybeat-schedule.dat
+
+*/reports/*.html
+*/reports/*.csv
