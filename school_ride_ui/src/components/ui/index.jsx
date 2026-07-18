@@ -227,14 +227,44 @@ export function PageHeader({ title, subtitle, action }) {
 
 //  ErrorMessage
 export function ErrorMessage({ error }) {
-  if (!error) return null
-  const message = error?.response?.data?.detail
-    || error?.response?.data?.message
-    || error?.message
-    || 'Something went wrong.'
+  if (!error) return null;
+
+  let message = 'Something went wrong.';
+
+  // If the server responded with a specific status code
+  if (error.response) {
+    const status = error.response.status;
+    const data = error.response.data;
+
+    // Handle standard server crashes/misconfigurations (like 405, 500, 502)
+    if (status === 405) {
+      message = 'This action is not allowed (405 Method Not Allowed). Please contact support.';
+    } else if (status === 404) {
+      message = 'The requested resource was not found (404).';
+    } else if (status >= 500) {
+      message = 'Server error. Please try again later.';
+    } 
+    // If it's a proper JSON error response, extract the backend message
+    else if (data && typeof data === 'object') {
+      message = data.detail || data.message || data.error || message;
+    } 
+    // Fallback if the data is just a raw HTML string
+    else if (typeof data === 'string' && data.includes('<html')) {
+      message = `Request failed with status code ${status}.`;
+    }
+  } 
+  // If the request was made but no response was received (Network issues)
+  else if (error.request) {
+    message = 'Cannot connect to the server. Please check your internet connection.';
+  } 
+  // Fallback to the generic Axios text message
+  else if (error.message) {
+    message = error.message;
+  }
+
   return (
     <div className="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
       {message}
     </div>
-  )
+  );
 }
