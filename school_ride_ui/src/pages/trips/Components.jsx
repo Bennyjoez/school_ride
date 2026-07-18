@@ -93,7 +93,7 @@ export function TripFormModal({ open, onClose }) {
           <p className="text-sm text-gray-500">
             <span className="font-medium bold text-gray-800">Note:</span>{" "}
             Firefox may not support time selection. Please select the date and
-            type in the time, e.g. "11:30AM".
+            type in the time, e.g. &quot;11:30AM&quot;.
           </p>
         )}
         <Input

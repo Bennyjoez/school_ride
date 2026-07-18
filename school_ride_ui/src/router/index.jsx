@@ -21,7 +21,6 @@ import NotificationsPage from "../pages/notifications/NotificationPage";
 // Define role constants for cleaner code readability
 const ADMINS = ["1", "2", "3"]; 
 const STAFF = ["1", "2", "3", "4", "5"];
-const ALL_ROLES = ["1", "2", "3", "4", "5", "6"];
 
 export const router = createHashRouter([
   {

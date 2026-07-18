@@ -118,8 +118,8 @@ Hit **Start swarming** and watch the real-time charts.
 Set your credentials and trip ID via environment variables:
 
 ```bash
-export DRIVER_EMAIL=driver@school.com
-export DRIVER_PASSWORD=changeme
+export DRIVER_EMAIL=test@example.com
+export DRIVER_PASSWORD=REDACTED_PASS
 export TRIP_ID=1
 ```
 
@@ -168,22 +168,22 @@ Pass credentials and trip ID as `-e` flags:
 # Ramp
 k6 run stress_tests/k6/ramp.js \
    -e BASE_URL=http://127.0.0.1:8000 \
-   -e DRIVER_EMAIL=driver@school.com \
-   -e DRIVER_PASSWORD=changeme \
+   -e DRIVER_EMAIL=test@example.com \
+   -e DRIVER_PASSWORD=REDACTED_PASS \
    -e TRIP_ID=1
 
 # Soak
 k6 run stress_tests/k6/soak.js \
    -e BASE_URL=http://127.0.0.1:8000 \
-   -e DRIVER_EMAIL=driver@school.com \
-   -e DRIVER_PASSWORD=changeme \
+   -e DRIVER_EMAIL=test@example.com \
+   -e DRIVER_PASSWORD=REDACTED_PASS \
    -e TRIP_ID=1
 
 # Spike
 k6 run stress_tests/k6/spike.js \
    -e BASE_URL=http://127.0.0.1:8000 \
-   -e DRIVER_EMAIL=driver@school.com \
-   -e DRIVER_PASSWORD=changeme \
+   -e DRIVER_EMAIL=test@example.com \
+   -e DRIVER_PASSWORD=REDACTED_PASS \
    -e TRIP_ID=1
 ```
 

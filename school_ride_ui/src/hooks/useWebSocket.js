@@ -56,7 +56,7 @@ export function useWebSocket(
       console.error("[WS] Error", error);
     };
 
-    ws.onclose = (event) => {
+    ws.onclose = (_) => {
       onClose?.();
     };
 
@@ -74,5 +74,5 @@ export const getWebSocketUrl = (tripId, accessToken) => {
     return null;
   }
   const WS_BASE = import.meta.env.VITE_WS_URL
-  const url = `${WS_BASE}/ws/trips/${tripId}/track/?token=${accessToken}`
+  return `${WS_BASE}/ws/trips/${tripId}/track/?token=${accessToken}`
 };
